@@ -13,14 +13,19 @@
         android:theme="@style/Theme.SuperSnake"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name=".UIActivity"
+            android:exported="true"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".GameViewActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>
