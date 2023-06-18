@@ -3,10 +3,83 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_graph"
-    app:startDestination="@id/basicFragment2">
+    app:startDestination="@id/loadingFragment">
     <fragment
-        android:id="@+id/basicFragment2"
-        android:name="com.example.supersnake.BasicFragment"
-        android:label="fragment_basic"
-        tools:layout="@layout/fragment_basic" />
+        android:id="@+id/loadingFragment"
+        android:name="com.example.supersnake.LoadingFragment"
+        android:label="fragment_loading"
+        tools:layout="@layout/fragment_loading" >
+        <action
+            android:id="@+id/action_loadingFragment_to_menuFragment"
+            app:destination="@id/menuFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/menuFragment"
+        android:name="com.example.supersnake.MenuFragment"
+        android:label="fragment_menu"
+        tools:layout="@layout/fragment_menu" >
+        <action
+            android:id="@+id/action_menuFragment_to_singleplayerFragment"
+            app:destination="@id/singleplayerFragment" />
+        <action
+            android:id="@+id/action_menuFragment_to_multiplayerMenuFragment"
+            app:destination="@id/multiplayerMenuFragment" />
+        <action
+            android:id="@+id/action_menuFragment_to_aboutFragment"
+            app:destination="@id/aboutFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/multiplayerMenuFragment"
+        android:name="com.example.supersnake.MultiplayerMenuFragment"
+        android:label="fragment_multiplayer_menu"
+        tools:layout="@layout/fragment_multiplayer_menu" >
+        <action
+            android:id="@+id/action_multiplayerMenuFragment_to_multiplayerGameFragment"
+            app:destination="@id/multiplayerGameFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/multiplayerGameFragment"
+        android:name="com.example.supersnake.MultiplayerGameFragment"
+        android:label="fragment_multiplayer_game"
+        tools:layout="@layout/fragment_multiplayer_game" >
+        <action
+            android:id="@+id/action_multiplayerGameFragment_to_gameOverMultiplayerFragment"
+            app:destination="@id/gameOverMultiplayerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/singleplayerFragment"
+        android:name="com.example.supersnake.SingleplayerFragment"
+        android:label="fragment_singleplayer"
+        tools:layout="@layout/fragment_singleplayer" >
+        <action
+            android:id="@+id/action_singleplayerFragment_to_gameOverFragment"
+            app:destination="@id/gameOverFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/gameOverFragment"
+        android:name="com.example.supersnake.GameOverFragment"
+        android:label="fragment_game_over"
+        tools:layout="@layout/fragment_game_over" >
+        <action
+            android:id="@+id/action_gameOverFragment_to_menuFragment2"
+            app:destination="@id/menuFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/gameOverMultiplayerFragment"
+        android:name="com.example.supersnake.GameOverMultiplayerFragment"
+        android:label="fragment_game_over_multiplayer"
+        tools:layout="@layout/fragment_game_over_multiplayer" >
+        <action
+            android:id="@+id/action_gameOverMultiplayerFragment_to_menuFragment"
+            app:destination="@id/menuFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.example.supersnake.AboutFragment"
+        android:label="fragment_about"
+        tools:layout="@layout/fragment_about" >
+        <action
+            android:id="@+id/action_aboutFragment_to_menuFragment"
+            app:destination="@id/menuFragment" />
+    </fragment>
 </navigation>
