@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.navigation.fragment.findNavController
 
 // TODO: Rename parameter arguments, choose names that match
@@ -61,6 +62,14 @@ class MultiplayerMenuFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val searchingAnimation: TextView = view.findViewById(R.id.animationSearching)
+        searchingAnimation.visibility = View.GONE
+
+        val btnPlayerSearch: Button = view.findViewById(R.id.btnSearchPlayer)
+        btnPlayerSearch.setOnClickListener(){
+            searchingAnimation.visibility = View.VISIBLE
+        }
 
         val btnToMultiplayerScreen: Button = view.findViewById<Button>(R.id.btnTestMulti)
         btnToMultiplayerScreen.setOnClickListener(){
