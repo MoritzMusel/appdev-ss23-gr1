@@ -15,7 +15,7 @@
         <activity
             android:name=".UIActivity"
             android:exported="true"
-            android:screenOrientation="portrait">
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,7 +25,7 @@
         <activity
             android:name=".GameViewActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="landscape" />
 
         <meta-data
             android:name="preloaded_fonts"
