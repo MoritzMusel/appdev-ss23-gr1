@@ -1,9 +1,14 @@
 package com.example.supersnake
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.RectF
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.MotionEvent
@@ -34,6 +39,10 @@ class GameViewActivity : AppCompatActivity() {
         private var apple: Apple? = null
         private var gameStarted = false
         private var isGameOver = false
+        private lateinit var snakeHeadBitmap: Bitmap
+        private lateinit var snakeHeadDrawable: Drawable
+        private lateinit var appleBitmap: Bitmap
+
 
         // Retry button
         val retryButton = Button(context).apply {
@@ -57,6 +66,17 @@ class GameViewActivity : AppCompatActivity() {
             snakeParts.add(SnakePart(1, 0))
             snakeParts.add(SnakePart(0, 0))
             apple = Apple()
+
+            // Load the snake head image drawable
+            val snakeHeadBitmap = BitmapFactory.decodeResource(resources, R.drawable.snake_head)
+            val scaledSnakeHeadBitmap = Bitmap.createScaledBitmap(snakeHeadBitmap, snakeSize, snakeSize, false)
+            snakeHeadDrawable = BitmapDrawable(resources, scaledSnakeHeadBitmap)
+
+            // Load the apple image bitmap
+            val rawBitmap = BitmapFactory.decodeResource(resources, R.drawable.apple)
+            val scaledWidth = snakeSize
+            val scaledHeight = snakeSize
+            appleBitmap = Bitmap.createScaledBitmap(rawBitmap, scaledWidth, scaledHeight, false)
         }
 
         fun startGame() {
@@ -155,17 +175,33 @@ class GameViewActivity : AppCompatActivity() {
             paint.color = Color.WHITE
             paint.strokeWidth = 5f
 
-            snakeParts.forEach { part ->
+            // Draw the snake's head
+            val snakeHead = snakeParts.first()
+            val snakeHeadX = snakeHead.x * snakeSize
+            val snakeHeadY = snakeHead.y * snakeSize
+            snakeHeadDrawable.setBounds(snakeHeadX, snakeHeadY, snakeHeadX + snakeSize, snakeHeadY + snakeSize)
+            snakeHeadDrawable.draw(canvas)
+
+            // Draw the rest of the snake parts
+            snakeParts.subList(1, snakeParts.size).forEach { part ->
                 val x = part.x * snakeSize
                 val y = part.y * snakeSize
-                canvas.drawRect(x.toFloat(), y.toFloat(), (x + snakeSize).toFloat(), (y + snakeSize).toFloat(), paint)
+                canvas.drawRect(
+                    x.toFloat(),
+                    y.toFloat(),
+                    (x + snakeSize).toFloat(),
+                    (y + snakeSize).toFloat(),
+                    paint
+                )
             }
 
-            paint.color = Color.RED
-            val appleX = apple?.x ?: 0
-            val appleY = apple?.y ?: 0
-            canvas.drawRect(appleX * snakeSize.toFloat(), appleY * snakeSize.toFloat(),
-                (appleX * snakeSize + snakeSize).toFloat(), (appleY * snakeSize + snakeSize).toFloat(), paint)
+            // Draw the apple
+            apple?.let {
+                val appleX = it.x * snakeSize
+                val appleY = it.y * snakeSize
+                val destRect = RectF(appleX.toFloat(), appleY.toFloat(), (appleX + snakeSize).toFloat(), (appleY + snakeSize).toFloat())
+                canvas.drawBitmap(appleBitmap, null, destRect, null)
+            }
 
             // Draw retry button when game over
             if (isGameOver) {
