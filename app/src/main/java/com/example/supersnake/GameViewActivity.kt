@@ -1,10 +1,12 @@
 package com.example.supersnake
 
+import android.R.attr.bitmap
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.drawable.BitmapDrawable
@@ -15,9 +17,9 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import java.util.Random
+
 
 class GameViewActivity : AppCompatActivity() {
 
@@ -35,14 +37,27 @@ class GameViewActivity : AppCompatActivity() {
         private var direction = Direction.RIGHT
         private var isPlaying = false
         private val snakeSize = 50
-        private val snakeParts = ArrayList<SnakePart>()
         private var apple: Apple? = null
         private var gameStarted = false
         private var isGameOver = false
         private lateinit var snakeHeadBitmap: Bitmap
         private lateinit var snakeHeadDrawable: Drawable
+        private lateinit var snakeHeadUpBitmap: Bitmap
+        private lateinit var snakeHeadDownBitmap: Bitmap
+        private lateinit var snakeHeadLeftBitmap: Bitmap
+        private lateinit var snakeHeadRightBitmap: Bitmap
         private lateinit var appleBitmap: Bitmap
 
+        private lateinit var snakeBodyBitmap: Bitmap
+        private lateinit var snakeBodyDrawable: Drawable
+        private lateinit var snakeBodyVerticalBitmap: Bitmap
+        private lateinit var snakeBodyHorizontalBitmap: Bitmap
+
+        private var snakeParts: MutableList<SnakePart> = mutableListOf(
+            SnakePart(5, 5, Direction.UP),
+            SnakePart(5, 6, Direction.UP),
+            SnakePart(5, 7, Direction.UP)
+        )
 
         // Retry button
         val retryButton = Button(context).apply {
@@ -62,15 +77,21 @@ class GameViewActivity : AppCompatActivity() {
         }
 
         init {
-            snakeParts.add(SnakePart(2, 0))
-            snakeParts.add(SnakePart(1, 0))
-            snakeParts.add(SnakePart(0, 0))
             apple = Apple()
 
-            // Load the snake head image drawable
-            val snakeHeadBitmap = BitmapFactory.decodeResource(resources, R.drawable.snake_head)
-            val scaledSnakeHeadBitmap = Bitmap.createScaledBitmap(snakeHeadBitmap, snakeSize, snakeSize, false)
-            snakeHeadDrawable = BitmapDrawable(resources, scaledSnakeHeadBitmap)
+            // Load the snake head and body image bitmaps for different orientations
+            snakeHeadBitmap = BitmapFactory.decodeResource(resources, R.drawable.snake_head)
+            snakeHeadUpBitmap = rotateBitmap(snakeHeadBitmap, -90f)
+            snakeHeadDownBitmap = rotateBitmap(snakeHeadBitmap, 90f)
+            snakeHeadLeftBitmap = rotateBitmap(snakeHeadBitmap, 180f)
+            snakeHeadRightBitmap = rotateBitmap(snakeHeadBitmap, 0f)
+
+            snakeBodyBitmap = BitmapFactory.decodeResource(resources, R.drawable.snake_body)
+            snakeBodyVerticalBitmap = rotateBitmap(snakeBodyBitmap, 90f)
+            snakeBodyHorizontalBitmap = rotateBitmap(snakeBodyBitmap, 0f)
+
+            snakeHeadBitmap = snakeHeadUpBitmap
+            snakeHeadBitmap = Bitmap.createScaledBitmap(snakeHeadBitmap, snakeSize, snakeSize, false)
 
             // Load the apple image bitmap
             val rawBitmap = BitmapFactory.decodeResource(resources, R.drawable.apple)
@@ -149,9 +170,9 @@ class GameViewActivity : AppCompatActivity() {
 
         private fun restartGame() {
             snakeParts.clear()
-            snakeParts.add(SnakePart(2, 0))
-            snakeParts.add(SnakePart(1, 0))
-            snakeParts.add(SnakePart(0, 0))
+            snakeParts.add(SnakePart(2, 0, Direction.RIGHT))
+            snakeParts.add(SnakePart(1, 0, Direction.RIGHT))
+            snakeParts.add(SnakePart(0, 0, Direction.RIGHT))
             apple = Apple()
             direction = Direction.RIGHT // Set initial direction to right
             isGameOver = false
@@ -168,6 +189,29 @@ class GameViewActivity : AppCompatActivity() {
             }
         }
 
+        private fun getSnakeHeadDrawable(): Drawable {
+            return when (direction) {
+                Direction.UP -> BitmapDrawable(resources, snakeHeadUpBitmap)
+                Direction.DOWN -> BitmapDrawable(resources, snakeHeadDownBitmap)
+                Direction.LEFT -> BitmapDrawable(resources, snakeHeadLeftBitmap)
+                Direction.RIGHT -> BitmapDrawable(resources, snakeHeadRightBitmap)
+            }
+        }
+
+        private fun getSnakeBodyDrawable(dir: Direction): Drawable {
+           // val d = if(dir != null) dir else direction
+            return when (dir) {
+                Direction.UP, Direction.DOWN -> BitmapDrawable(resources, snakeBodyVerticalBitmap)
+                Direction.RIGHT, Direction.LEFT -> BitmapDrawable(resources, snakeBodyHorizontalBitmap)
+            }
+        }
+
+        private fun rotateBitmap(bitmap: Bitmap, degrees: Float): Bitmap {
+            val matrix = Matrix()
+            matrix.postRotate(degrees)
+            return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+        }
+
         override fun onDraw(canvas: Canvas) {
             super.onDraw(canvas)
             canvas.drawColor(Color.BLACK)
@@ -179,6 +223,7 @@ class GameViewActivity : AppCompatActivity() {
             val snakeHead = snakeParts.first()
             val snakeHeadX = snakeHead.x * snakeSize
             val snakeHeadY = snakeHead.y * snakeSize
+            snakeHeadDrawable = getSnakeHeadDrawable()
             snakeHeadDrawable.setBounds(snakeHeadX, snakeHeadY, snakeHeadX + snakeSize, snakeHeadY + snakeSize)
             snakeHeadDrawable.draw(canvas)
 
@@ -186,13 +231,29 @@ class GameViewActivity : AppCompatActivity() {
             snakeParts.subList(1, snakeParts.size).forEach { part ->
                 val x = part.x * snakeSize
                 val y = part.y * snakeSize
-                canvas.drawRect(
-                    x.toFloat(),
-                    y.toFloat(),
-                    (x + snakeSize).toFloat(),
-                    (y + snakeSize).toFloat(),
-                    paint
-                )
+               /* var dir: Direction = Direction.LEFT
+
+                if(snakeHead.x == x && (snakeHead.y > y || snakeHead.y < y)){
+                    dir = Direction.UP
+                }else if(snakeHead.x != x && (snakeHead.y > y || snakeHead.y < y)){
+                    dir = Direction.LEFT
+                }else if(snakeHead.y == y && (snakeHead.x > x || snakeHead.x < x)){
+                    dir = Direction.UP
+                }else{
+                    dir = Direction.UP
+                }
+
+                when(dir){
+                    Direction.UP, Direction.DOWN -> {
+                        snakeBodyDrawable = getSnakeBodyDrawable(dir)
+                    }
+                    Direction.LEFT, Direction.RIGHT -> {
+                        snakeBodyDrawable = getSnakeBodyDrawable(dir)
+                    }
+                }*/
+                snakeBodyDrawable = getSnakeBodyDrawable(part.direction)
+                snakeBodyDrawable.setBounds(x, y, x + snakeSize, y + snakeSize)
+                snakeBodyDrawable.draw(canvas)
             }
 
             // Draw the apple
@@ -235,7 +296,7 @@ class GameViewActivity : AppCompatActivity() {
         }
     }
 
-    data class SnakePart(var x: Int, var y: Int)
+    data class SnakePart(var x: Int, var y: Int, var direction: Direction)
 
     data class Apple(var x: Int = 5, var y: Int = 5)
 
