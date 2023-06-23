@@ -65,10 +65,6 @@ class LoadingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val progressBar: ProgressBar = view.findViewById(R.id.progressBar)
-        progressBar.max = 20
-        var progress = 20
-        ObjectAnimator.ofInt(progressBar, "progress", progress).setDuration(3000).start()
 
 
         val btn: Button = view.findViewById<Button>(R.id.btnToNext)

@@ -52,4 +52,7 @@ dependencies {
 
     // Kotlin
     implementation "androidx.fragment:fragment-ktx:$fragment_version"
+
+    //Lottiefiles
+    implementation "com.airbnb.android:lottie:6.0.1"
 }
