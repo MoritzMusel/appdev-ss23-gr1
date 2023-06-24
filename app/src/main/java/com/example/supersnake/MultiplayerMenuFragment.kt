@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.navigation.fragment.findNavController
+import com.airbnb.lottie.LottieAnimationView
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -63,16 +64,18 @@ class MultiplayerMenuFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val searchingAnimation: TextView = view.findViewById(R.id.animationSearching)
+        val searchingAnimation: LottieAnimationView = view.findViewById(R.id.animationSearching)
         searchingAnimation.visibility = View.GONE
 
         val btnPlayerSearch: Button = view.findViewById(R.id.btnSearchPlayer)
         btnPlayerSearch.setOnClickListener(){
+            btnPlayerSearch.visibility = View.GONE
             searchingAnimation.visibility = View.VISIBLE
         }
 
         val btnToMultiplayerScreen: Button = view.findViewById<Button>(R.id.btnTestMulti)
         btnToMultiplayerScreen.setOnClickListener(){
+
             findNavController().navigate(R.id.multiplayerGameFragment)
         }
     }

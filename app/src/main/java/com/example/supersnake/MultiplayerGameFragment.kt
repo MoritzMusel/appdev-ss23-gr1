@@ -72,5 +72,6 @@ class MultiplayerGameFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         mp.stop()
+        mp.release()
     }
 }

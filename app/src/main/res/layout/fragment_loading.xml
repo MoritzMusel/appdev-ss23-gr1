@@ -27,7 +27,7 @@
             android:layout_marginTop="100dp"
             android:fontFamily="@font/press_start_2p"
             android:scaleY="1.2"
-            android:text="Loading"
+            android:text="Loading..."
             android:textSize="30sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
