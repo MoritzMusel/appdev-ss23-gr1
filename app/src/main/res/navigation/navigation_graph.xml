@@ -36,6 +36,9 @@
         <action
             android:id="@+id/action_multiplayerMenuFragment_to_multiplayerGameFragment"
             app:destination="@id/multiplayerGameFragment" />
+        <action
+            android:id="@+id/action_multiplayerMenuFragment_to_menuFragment"
+            app:destination="@id/menuFragment" />
     </fragment>
     <fragment
         android:id="@+id/multiplayerGameFragment"
@@ -45,6 +48,9 @@
         <action
             android:id="@+id/action_multiplayerGameFragment_to_gameOverMultiplayerFragment"
             app:destination="@id/gameOverMultiplayerFragment" />
+        <action
+            android:id="@+id/action_multiplayerGameFragment_to_menuFragment"
+            app:destination="@id/menuFragment" />
     </fragment>
     <fragment
         android:id="@+id/singleplayerFragment"
@@ -54,6 +60,9 @@
         <action
             android:id="@+id/action_singleplayerFragment_to_gameOverFragment"
             app:destination="@id/gameOverFragment" />
+        <action
+            android:id="@+id/action_singleplayerFragment_to_menuFragment"
+            app:destination="@id/menuFragment" />
     </fragment>
     <fragment
         android:id="@+id/gameOverFragment"

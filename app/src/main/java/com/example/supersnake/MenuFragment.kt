@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.activity.addCallback
 import androidx.navigation.fragment.findNavController
+import kotlin.system.exitProcess
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -28,6 +30,10 @@ class MenuFragment : Fragment() {
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            exitProcess(0)
         }
     }
 
@@ -78,4 +84,6 @@ class MenuFragment : Fragment() {
             findNavController().navigate(R.id.aboutFragment)
         }
     }
+
+
 }

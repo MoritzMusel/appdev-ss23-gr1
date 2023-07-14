@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.activity.addCallback
 import androidx.navigation.fragment.findNavController
 import com.airbnb.lottie.LottieAnimationView
 
@@ -31,6 +32,11 @@ class MultiplayerMenuFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            findNavController().navigate(R.id.menuFragment)
+        }
+
     }
 
     override fun onCreateView(
