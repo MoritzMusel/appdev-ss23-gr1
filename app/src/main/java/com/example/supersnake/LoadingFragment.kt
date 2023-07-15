@@ -1,17 +1,13 @@
 package com.example.supersnake
 
 import android.os.Bundle
-import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.navigation.fragment.findNavController
-import java.util.Timer
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import kotlin.concurrent.timerTask
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -68,9 +64,8 @@ class LoadingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         Executors.newSingleThreadScheduledExecutor().schedule({
-            findNavController().navigate(R.id.menuFragment)
-        }, 2, TimeUnit.SECONDS)
-
+            findNavController().navigate(R.id.action_loadingFragment_to_menuFragment)
+        }, 3, TimeUnit.SECONDS)
 
      /*   Handler().postDelayed({
             findNavController().navigate(R.id.menuFragment)

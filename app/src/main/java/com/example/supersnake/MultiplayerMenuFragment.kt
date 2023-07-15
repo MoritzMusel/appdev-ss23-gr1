@@ -34,9 +34,8 @@ class MultiplayerMenuFragment : Fragment() {
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            findNavController().navigate(R.id.menuFragment)
+            findNavController().navigate(R.id.action_multiplayerMenuFragment_to_menuFragment)
         }
-
     }
 
     override fun onCreateView(

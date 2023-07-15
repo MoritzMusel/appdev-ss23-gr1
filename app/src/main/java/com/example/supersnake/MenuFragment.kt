@@ -77,11 +77,11 @@ class MenuFragment : Fragment() {
         }
 
         btnMultiplayer.setOnClickListener(){
-            findNavController().navigate(R.id.multiplayerMenuFragment)
+            findNavController().navigate(R.id.action_menuFragment_to_multiplayerMenuFragment)
         }
 
         btnAbout.setOnClickListener(){
-            findNavController().navigate(R.id.aboutFragment)
+            findNavController().navigate(R.id.action_menuFragment_to_aboutFragment)
         }
     }
 

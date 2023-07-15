@@ -32,7 +32,7 @@ class GameOverFragment : Fragment() {
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            findNavController().navigate(R.id.menuFragment)
+            findNavController().navigate(R.id.action_gameOverFragment_to_menuFragment2)
         }
 
     }
@@ -70,7 +70,7 @@ class GameOverFragment : Fragment() {
 
         val btnToMenu: Button = view.findViewById<Button>(R.id.btnGameToMenu)
         btnToMenu.setOnClickListener(){
-            findNavController().navigate(R.id.menuFragment)
+            findNavController().navigate(R.id.action_gameOverFragment_to_menuFragment2)
         }
     }
 }

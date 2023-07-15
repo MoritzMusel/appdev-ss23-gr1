@@ -32,7 +32,7 @@ class AboutFragment : Fragment() {
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            findNavController().navigate(R.id.menuFragment)
+            findNavController().navigate(R.id.action_aboutFragment_to_menuFragment)
         }
 
     }
@@ -70,7 +70,7 @@ class AboutFragment : Fragment() {
 
         val btnBackToMenu: Button = view.findViewById<Button>(R.id.btnBack)
         btnBackToMenu.setOnClickListener(){
-            findNavController().navigate(R.id.menuFragment)
+            findNavController().navigate(R.id.action_aboutFragment_to_menuFragment)
         }
     }
 }
