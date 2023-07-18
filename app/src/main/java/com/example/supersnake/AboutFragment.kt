@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
 import android.widget.Button
 import androidx.activity.addCallback
 import androidx.navigation.fragment.findNavController
@@ -68,9 +69,13 @@ class AboutFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val btnBackToMenu: Button = view.findViewById<Button>(R.id.btnBack)
+        val btnBackToMenu: Button = view.findViewById(R.id.btnBack)
         btnBackToMenu.setOnClickListener(){
             findNavController().navigate(R.id.action_aboutFragment_to_menuFragment)
         }
+
+        val myWebView: WebView = view.findViewById(R.id.webView)
+        myWebView.loadUrl("https://github.com/MoritzMusel/appdev-ss23-gr1")
+        //myWebView.loadUrl("https://github.com")
     }
 }
