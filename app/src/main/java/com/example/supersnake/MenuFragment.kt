@@ -68,9 +68,10 @@ class MenuFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val btnSingleplayer: Button = view.findViewById<Button>(R.id.btnSingleplayer)
-        val btnMultiplayer: Button = view.findViewById<Button>(R.id.btnMultiplayer)
-        val btnAbout: Button = view.findViewById<Button>(R.id.btnAbout)
+        val btnSingleplayer: Button = view.findViewById(R.id.btnSingleplayer)
+        val btnMultiplayer: Button = view.findViewById(R.id.btnMultiplayer)
+        val btnAbout: Button = view.findViewById(R.id.btnAbout)
+        val btnScore: Button = view.findViewById(R.id.btnHighScore)
 
         btnSingleplayer.setOnClickListener(){
             findNavController().navigate(R.id.singleplayerFragment)
@@ -82,6 +83,10 @@ class MenuFragment : Fragment() {
 
         btnAbout.setOnClickListener(){
             findNavController().navigate(R.id.action_menuFragment_to_aboutFragment)
+        }
+
+        btnScore.setOnClickListener(){
+            findNavController().navigate(R.id.action_menuFragment_to_scoreFragment)
         }
     }
 

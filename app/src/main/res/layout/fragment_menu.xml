@@ -12,16 +12,18 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnAbout"
-            android:layout_width="wrap_content"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:layout_margin="30dp"
+            android:background="@drawable/button_bg"
             android:fontFamily="@font/press_start_2p"
             android:scaleY="1.2"
             android:text="About"
-            android:background="@drawable/button_bg"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnHighScore"
             app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnMultiplayer" />
 
@@ -55,5 +57,19 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnSingleplayer" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnHighScore"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_bg"
+            android:fontFamily="@font/press_start_2p"
+            android:scaleY="1.2"
+            android:text="Highscore"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/btnAbout"
+            app:layout_constraintTop_toTopOf="@+id/btnAbout" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

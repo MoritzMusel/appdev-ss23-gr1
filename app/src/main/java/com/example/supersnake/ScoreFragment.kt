@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
 import android.widget.Button
 import androidx.activity.addCallback
 import androidx.navigation.fragment.findNavController
@@ -17,10 +16,10 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [AboutFragment.newInstance] factory method to
+ * Use the [ScoreFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class AboutFragment : Fragment() {
+class ScoreFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -33,9 +32,8 @@ class AboutFragment : Fragment() {
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            findNavController().navigate(R.id.action_aboutFragment_to_menuFragment)
+            findNavController().navigate(R.id.action_scoreFragment_to_menuFragment)
         }
-
     }
 
     override fun onCreateView(
@@ -43,7 +41,7 @@ class AboutFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_about, container, false)
+        return inflater.inflate(R.layout.fragment_score, container, false)
     }
 
     companion object {
@@ -53,12 +51,12 @@ class AboutFragment : Fragment() {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment AboutFragment.
+         * @return A new instance of fragment ScoreFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            AboutFragment().apply {
+            ScoreFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
@@ -69,13 +67,9 @@ class AboutFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val btnBackToMenu: Button = view.findViewById(R.id.btnMenu)
-        btnBackToMenu.setOnClickListener(){
-            findNavController().navigate(R.id.action_aboutFragment_to_menuFragment)
+        val btnToMenu: Button = view.findViewById(R.id.btnMenu)
+        btnToMenu.setOnClickListener(){
+            findNavController().navigate(R.id.action_scoreFragment_to_menuFragment)
         }
-
-        val webView: WebView = view.findViewById(R.id.webView)
-        webView.loadUrl("https://github.com/MoritzMusel/appdev-ss23-gr1")
-        //myWebView.loadUrl("https://github.com")
     }
 }
