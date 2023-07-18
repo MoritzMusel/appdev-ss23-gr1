@@ -29,8 +29,10 @@ class MainActivity : ComponentActivity() {
 
         generator.setOnClickListener {
             val randomNumber = Random.nextInt(1, 101)
-            dbHelper.saveValue(randomNumber)
-            updateDisplay()
+            if(randomNumber > dbHelper.getValue()){
+                dbHelper.saveValue(randomNumber)
+                updateDisplay()
+            }
         }
     }
 
