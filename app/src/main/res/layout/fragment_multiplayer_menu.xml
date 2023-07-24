@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MultiplayerMenuFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            android:fontFamily="@font/press_start_2p"
+            android:scaleY="1.5"
+            android:text="Enter username:"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/txtUsername"
+            app:layout_constraintEnd_toEndOf="@+id/txtUsername"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/txtUsername"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <EditText
+            android:id="@+id/txtUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:ems="10"
+            android:fontFamily="@font/press_start_2p"
+            android:hint="Username"
+            android:inputType="text"
+            android:scaleY="1.5"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toTopOf="@+id/btnSearchPlayer"
+            app:layout_constraintEnd_toEndOf="@+id/btnSearchPlayer"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/btnSearchPlayer"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:layout_constraintVertical_bias="0.5"
+            />
+
+        <Button
+            android:id="@+id/btnTestMulti"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:text="to multiplayer screen"
+            app:layout_constraintStart_toEndOf="@+id/btnSearchPlayer"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSearchPlayer"
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:background="@drawable/button_bg"
+            android:fontFamily="@font/press_start_2p"
+            android:scaleY="1.2"
+            android:text="Search for player"
+            app:layout_constraintBottom_toTopOf="@+id/animationSearching"
+            app:layout_constraintEnd_toEndOf="@+id/animationSearching"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/animationSearching"
+            app:layout_constraintTop_toBottomOf="@+id/txtUsername"
+            app:layout_constraintVertical_bias="0.5" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animationSearching"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnSearchPlayer"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/animation" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
