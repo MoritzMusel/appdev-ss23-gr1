@@ -28,8 +28,8 @@ const clientRooms = {};
 io.on('connection', client => {
   console.log('Client connected: ' + client.id)
 
-  client.on("disconnect", () => {
-    console.log('Client disconnected ' + client.id); // undefined
+  client.on("disconnect", () => {// undefined
+    console.log('Client disconnected ' + client.id); 
   });
 
   client.on('NEW_GAME', () =>{

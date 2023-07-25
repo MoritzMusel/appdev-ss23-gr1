@@ -18,24 +18,15 @@
       <div id="initialScreen" class="h-100">
         <div class="d-flex flex-column align-items-center justify-content-center h-100">
             <h1>Multiplayer Snake</h1>
-            <button
-              type="submit"
-              class="btn btn-success"
-              id="newGameButton"
-            >
-              Create New Game
-            </button>
-            <div>OR</div>
             <div class="form-group">
-              <input type="text" placeholder="Enter Game Code" id="gameCodeInput"/>
+              <input type="text" placeholder="Enter your Username" id="gamePlayerName"/>
             </div>
             <button
               type="submit"
               class="btn btn-success"
-              id="joinGameButton"
-            >
-              Join Game
+              id="joinGameButton">Join Game
             </button>
+
         </div>
       </div>
 
@@ -43,6 +34,9 @@
         <div class="d-flex flex-column align-items-center justify-content-center h-100">
 
           <h1>Your game code is: <span id="gameCodeDisplay"></span></h1>
+          <h1>Player One Name: <span id="playerOneName"></span></h1>
+          <h1>Player Two Name: <span id="playerTwoName"></span></h1>
+          
 
           <canvas id="canvas"></canvas>
         </div>
@@ -53,7 +47,7 @@
 
   <script type="module">
 import { io } from "https://cdn.socket.io/4.4.1/socket.io.esm.min.js";
-const socket = io('http://localhost:3000');
+const socket = io('https://supersnake-backend.onrender.com/');
 const BG_COLOUR = '#231f20';
 const SNAKE_COLOUR = '#c2c2c2';
 const FOOD_COLOUR = '#e66916';
@@ -70,35 +64,42 @@ socket.on('GAME_OVER', handleGameOver);
 socket.on('ROOM_NAME', handleGameCode);
 socket.on('UNKNOWN_CODE', handleUnknownCode);
 socket.on('TOO_MANY_PLAYERS', handleTooManyPlayers);
+socket.on('PLAYER_TWO_NAME', handlePlayerTwoName);
+socket.on('PLAYER_ONE_NAME', handlePlayerOneName);
 
 
 const gameScreen = document.getElementById('gameScreen');
 const initialScreen = document.getElementById('initialScreen');
-const newGameBtn = document.getElementById('newGameButton');
 const joinGameBtn = document.getElementById('joinGameButton');
-const gameCodeInput = document.getElementById('gameCodeInput');
 const gameCodeDisplay = document.getElementById('gameCodeDisplay');
+const playerOneName = document.getElementById('playerOneName');
+const playerTwoName = document.getElementById('playerTwoName');
 
-newGameBtn.addEventListener('click', newGame);
+//const newGameBtn = document.getElementById('newGameButton');
+
+//newGameBtn.addEventListener('click', newGame);
 joinGameBtn.addEventListener('click', joinGame);
 
-
+/*
 function newGame() {
   socket.emit('NEW_GAME');
   init();
 }
+*/
 
 function joinGame() {
-  const code = gameCodeInput.value;
-  socket.emit('JOIN_GAME', code);
-  init();
+  const code = gamePlayerName.value;//save the PlayerName in code
+  socket.emit('NEW_GAME', code);//emit to ther server "JOIN_GAME" with code as Attribut
+  init(code);
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////
 
 let canvas, ctx;
 let playerNumber;
 let gameActive = false;
 
-function init() {
+function init(code) {
   initialScreen.style.display = "none";
   gameScreen.style.display = "block";
 
@@ -114,9 +115,11 @@ function init() {
   gameActive = true;
 }
 
+
 function keydown(e) {
   socket.emit('MOVEMENT', e.keyCode);
 }
+
 
 function paintGame(state) {
   ctx.fillStyle = BG_COLOUR;
@@ -132,6 +135,8 @@ function paintGame(state) {
   paintPlayer(state.players[0], size, SNAKE_COLOUR);
   paintPlayer(state.players[1], size, 'red');
 }
+
+
 
 function paintPlayer(playerState, size, colour) {
   const snake = playerState.snake;
@@ -181,6 +186,16 @@ function handleUnknownCode() {
 function handleTooManyPlayers() {
   reset();
   alert('This game is already in progress');
+}
+
+function handlePlayerTwoName(playerName){
+  playerTwoName.innerText = playerName;
+
+}
+
+function handlePlayerOneName(playerName){
+  playerOneName.innerText = playerName;
+
 }
 
 function reset() {
