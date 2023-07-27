@@ -5,7 +5,6 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <!-- Socket.IO Server-->
-    <string name ="socket_io_server">"https://supersnake-backend.onrender.com/"</string>
     <!-- Socket.IO Events-->
     <string name="connect">"connect"</string>
     <string name="INIT">"INIT"</string>
@@ -16,5 +15,6 @@
     <string name="TOO_MANY_PLAYERS">"TOO_MANY_PLAYERS"</string>
     <string name="PLAYER_TWO_NAME">"PLAYER_TWO_NAME"</string>
     <string name="PLAYER_ONE_NAME">"PLAYER_ONE_NAME"</string>
+    <string name="NEW_GAME">"NEW_GAME"</string>
 
 </resources>

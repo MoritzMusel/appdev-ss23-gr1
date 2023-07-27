@@ -1,13 +1,15 @@
 package com.example.supersnake
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
+import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.airbnb.lottie.LottieAnimationView
 
@@ -15,6 +17,7 @@ import com.airbnb.lottie.LottieAnimationView
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+
 
 /**
  * A simple [Fragment] subclass.
@@ -25,6 +28,8 @@ class MultiplayerMenuFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+
+    private lateinit var txtUsername: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,8 +45,7 @@ class MultiplayerMenuFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_multiplayer_menu, container, false)
     }
@@ -74,8 +78,21 @@ class MultiplayerMenuFragment : Fragment() {
 
         val btnPlayerSearch: Button = view.findViewById(R.id.btnSearchPlayer)
         btnPlayerSearch.setOnClickListener(){
-            btnPlayerSearch.visibility = View.GONE
-            searchingAnimation.visibility = View.VISIBLE
+
+            txtUsername = view.findViewById(R.id.txtUsername)
+            if(txtUsername.text.toString().isEmpty()){
+                //edit Text is empty
+                showToast("Please enter your username")
+
+            }else{
+                val newGame = getString(R.string.NEW_GAME)
+                SocketHandler.emit(newGame, txtUsername.text.toString().trim())
+                Log.d("txtUsername", "Username: ${txtUsername.text.toString()}")
+                btnPlayerSearch.visibility = View.GONE
+                searchingAnimation.visibility = View.VISIBLE
+            }
+
+
         }
 
         val btnToMultiplayerScreen: Button = view.findViewById<Button>(R.id.btnTestMulti)
@@ -83,5 +100,34 @@ class MultiplayerMenuFragment : Fragment() {
 
             findNavController().navigate(R.id.multiplayerGameFragment)
         }
+
+        val connect = getString(R.string.connect)//get the Event Name from string
+        SocketHandler.setSocket();
+        SocketHandler.establishConnection()
+        val mSocket = SocketHandler.getSocket()//get the Socket
+
+        SocketHandler.on(connect) { args ->
+            Log.d("Socket", "You connected with id: ${mSocket.id()}")
+        }
+
+
     }
+
+
+
+
+
+
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+
+
+
+
+
+
+
+
 }
