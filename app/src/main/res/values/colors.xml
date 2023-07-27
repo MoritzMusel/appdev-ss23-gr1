@@ -2,4 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Colors for Multiplayer-->
+    <color name="BG_COLOUR">#231f20</color>
+    <color name="SNAKE_COLOUR">#c2c2c2</color>
+    <color name="FOOD_COLOUR">#e66916</color>
 </resources>

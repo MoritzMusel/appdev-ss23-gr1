@@ -55,4 +55,9 @@ dependencies {
 
     //Lottiefiles
     implementation "com.airbnb.android:lottie:6.0.1"
+
+    //Socket.io
+    implementation ('io.socket:socket.io-client:2.0.0') {
+        exclude group: 'org.json', module: 'json'
+    }
 }

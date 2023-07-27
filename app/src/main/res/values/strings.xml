@@ -4,4 +4,17 @@
     <string name="nen_richtig_geiles_default_fragment_f_r_meinen_lieblings_del_fabro">Nen richtig geiles default fragment für meinen lieblings del fabro❤️</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Socket.IO Server-->
+    <string name ="socket_io_server">"https://supersnake-backend.onrender.com/"</string>
+    <!-- Socket.IO Events-->
+    <string name="connect">"connect"</string>
+    <string name="INIT">"INIT"</string>
+    <string name="UPDATE_GAME_STATE">"UPDATE_GAME_STATE"</string>
+    <string name="GAME_OVER">"GAME_OVER"</string>
+    <string name="ROOM_NAME">"ROOM_NAME"</string>
+    <string name="UNKNOWN_CODE">"UNKNOWN_CODE"</string>
+    <string name="TOO_MANY_PLAYERS">"TOO_MANY_PLAYERS"</string>
+    <string name="PLAYER_TWO_NAME">"PLAYER_TWO_NAME"</string>
+    <string name="PLAYER_ONE_NAME">"PLAYER_ONE_NAME"</string>
+
 </resources>
