@@ -1,5 +1,4 @@
 package com.example.supersnake
-import android.util.Log
 import io.socket.client.IO
 import io.socket.client.Socket
 import java.net.URISyntaxException

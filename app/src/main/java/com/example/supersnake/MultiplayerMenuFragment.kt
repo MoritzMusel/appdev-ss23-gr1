@@ -12,6 +12,8 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.airbnb.lottie.LottieAnimationView
+import io.socket.client.Socket
+import kotlin.properties.Delegates
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -25,6 +27,14 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class MultiplayerMenuFragment : Fragment() {
+    private lateinit var mSocket: Socket
+    private lateinit var connectEvent: String
+    private lateinit var roomNameEvent: String
+    private lateinit var startGameEvent: String
+    private lateinit var initEvent: String
+    private lateinit var playerNumber : String
+    private lateinit var roomName: String
+
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -87,7 +97,7 @@ class MultiplayerMenuFragment : Fragment() {
             }else{
                 val newGame = getString(R.string.NEW_GAME)
                 SocketHandler.emit(newGame, txtUsername.text.toString().trim())
-                Log.d("txtUsername", "Username: ${txtUsername.text.toString()}")
+                Log.d("txtUsername", "Username: ${txtUsername.text}")
                 btnPlayerSearch.visibility = View.GONE
                 searchingAnimation.visibility = View.VISIBLE
             }
@@ -101,17 +111,48 @@ class MultiplayerMenuFragment : Fragment() {
             findNavController().navigate(R.id.multiplayerGameFragment)
         }
 
-        val connect = getString(R.string.connect)//get the Event Name from string
+        connectEvent = getString(R.string.connect)//get the Event Name from string
+        roomNameEvent = getString(R.string.ROOM_NAME)
+        initEvent = getString(R.string.INIT)
+        startGameEvent = getString(R.string.START_GAME)
+
         SocketHandler.setSocket();
         SocketHandler.establishConnection()
-        val mSocket = SocketHandler.getSocket()//get the Socket
+        mSocket = SocketHandler.getSocket()//get the Socket
 
-        SocketHandler.on(connect) { args ->
+
+        /**
+         *
+         */
+        SocketHandler.on(connectEvent) { args ->
             Log.d("Socket", "You connected with id: ${mSocket.id()}")
         }
 
+        /**
+         *
+         */
+        SocketHandler.on(roomNameEvent) { args ->
+           roomName = args[0] as String
+            Log.d("Socket", "RoomName: $roomName")
+        }
 
+        /**
+         *
+         */
+        SocketHandler.on(initEvent) { args ->
+            playerNumber = args[0] as String
+            //validate which PlayerNumber 1 or 2
+        }
+
+        /**
+         *
+         */
+        SocketHandler.on(startGameEvent) { args ->
+            
+        }
     }
+
+
 
 
 
@@ -121,6 +162,16 @@ class MultiplayerMenuFragment : Fragment() {
     private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
+    override fun onPause() {
+        super.onPause()
+        // Close the socket connection
+        SocketHandler.closeConnection()
+        Log.d("Socket", "Disconnected")
+    }
+
+
+
+
 
 
 

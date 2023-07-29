@@ -16,5 +16,6 @@
     <string name="PLAYER_TWO_NAME">"PLAYER_TWO_NAME"</string>
     <string name="PLAYER_ONE_NAME">"PLAYER_ONE_NAME"</string>
     <string name="NEW_GAME">"NEW_GAME"</string>
+    <string name="START_GAME">"START_GAME"</string>
 
 </resources>
