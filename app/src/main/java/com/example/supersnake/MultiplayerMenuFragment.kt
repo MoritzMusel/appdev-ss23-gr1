@@ -151,7 +151,7 @@ class MultiplayerMenuFragment : Fragment() {
          */
         SocketHandler.on(startGameEvent) {
             GlobalScope.launch(Dispatchers.Main) {
-                // Navigiere zum MultiplayerGameFragment
+                // navigate to MultiplayerGameFragment
                 findNavController().navigate(R.id.multiplayerGameFragment)
             }
         }

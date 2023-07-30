@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Horizontale Guideline zur gleichmäßigen Verteilung der Pfeile -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineVertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <ImageView
+        android:id="@+id/arrowUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/arrow_up_multiplayer"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <ImageView
+        android:id="@+id/arrowLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:src="@drawable/arrow_left_multiplayer"
+        app:layout_constraintEnd_toStartOf="@id/guidelineVertical"
+        app:layout_constraintTop_toBottomOf="@id/arrowUp" />
+
+    <ImageView
+        android:id="@+id/arrowRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:src="@drawable/arrow_right_multiplayer"
+        app:layout_constraintStart_toEndOf="@id/guidelineVertical"
+        app:layout_constraintTop_toBottomOf="@id/arrowUp" />
+
+    <ImageView
+        android:id="@+id/arrowDown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/arrow_down_multiplayer"
+        app:layout_constraintTop_toBottomOf="@id/arrowLeft"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
