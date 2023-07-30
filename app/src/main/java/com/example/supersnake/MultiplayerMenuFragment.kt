@@ -12,11 +12,11 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.airbnb.lottie.LottieAnimationView
-import io.socket.client.Socket
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlin.properties.Delegates
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,7 +30,6 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class MultiplayerMenuFragment : Fragment() {
-    private lateinit var mSocket: Socket
     private lateinit var connectEvent: String
     private lateinit var roomNameEvent: String
     private lateinit var startGameEvent: String
@@ -120,14 +119,13 @@ class MultiplayerMenuFragment : Fragment() {
 
         SocketHandler.setSocket();
         SocketHandler.establishConnection()
-        mSocket = SocketHandler.getSocket()//get the Socket
 
 
         /**
          *
          */
         SocketHandler.on(connectEvent) { args ->
-            Log.d("Socket", "You connected with id: ${mSocket.id()}")
+            Log.d("Socket", "You connected with id: ${SocketHandler.getSocket().id()}")
         }
 
         /**
@@ -156,13 +154,6 @@ class MultiplayerMenuFragment : Fragment() {
             }
         }
     }
-
-
-
-
-
-
-
 
     private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()

@@ -117,9 +117,7 @@ function startGame() {
 }
 
 
-function keydown(e) {
-  socket.emit('MOVEMENT', e.keyCode);
-}
+
 
 
 function paintGame(state) {
@@ -148,9 +146,7 @@ function paintPlayer(playerState, size, colour) {
   }
 }
 
-function handleInit(number) {
-  playerNumber = number;
-}
+
 
 function handleGameState(gameState) {
   if (!gameActive) {
@@ -158,6 +154,10 @@ function handleGameState(gameState) {
   }
   gameState = JSON.parse(gameState);
   requestAnimationFrame(() => paintGame(gameState));
+}
+
+function handleInit(number) {
+  playerNumber = number;
 }
 
 function handleGameOver(data) {
@@ -204,6 +204,10 @@ function reset() {
   gameCodeInput.value = '';
   initialScreen.style.display = "block";
   gameScreen.style.display = "none";
+}
+
+function keydown(e) {
+  socket.emit('MOVEMENT', e.keyCode);
 }
 
 

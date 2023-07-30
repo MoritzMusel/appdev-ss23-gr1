@@ -1,19 +1,43 @@
 package com.example.supersnake
 
+import android.annotation.SuppressLint
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageView
 import androidx.activity.addCallback
 import androidx.navigation.fragment.findNavController
+import com.google.gson.Gson
+import com.google.gson.stream.JsonReader
 import kotlin.system.exitProcess
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+
+//controls
+
+@SuppressLint("StaticFieldLeak")
+private lateinit var buttonUp : ImageView
+@SuppressLint("StaticFieldLeak")
+private lateinit var buttonDown : ImageView
+@SuppressLint("StaticFieldLeak")
+private lateinit var buttonLeft : ImageView
+@SuppressLint("StaticFieldLeak")
+private lateinit var buttonRight : ImageView
+
+private lateinit var movementEvent: String
+private lateinit var handleGameStateEvent: String
+
+
+
+
 
 /**
  * A simple [Fragment] subclass.
@@ -24,6 +48,7 @@ class MultiplayerGameFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+
 
     lateinit var mp: MediaPlayer
 
@@ -70,10 +95,44 @@ class MultiplayerGameFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        val snakeGameViewMultiplayer: SnakeGameViewMultiplayer = view.findViewById(R.id.snakeGameViewMultiplayer)
         mp = MediaPlayer.create(context, R.raw.epic_dramatic)
         mp.isLooping = true
         mp.start()
+        init(view)
+
+        buttonLeft.setOnClickListener {
+            //Handle Left
+            SocketHandler.emit(movementEvent, 37)
+            Log.d("Socket", "Button_Left: ${37}")
+        }
+
+        buttonDown.setOnClickListener {
+            //Handle Down
+            SocketHandler.emit(movementEvent, 38)
+            Log.d("Socket", "Button_Down: ${38}")
+        }
+
+        buttonRight.setOnClickListener {
+            //Handle Right
+            SocketHandler.emit(movementEvent, 39)
+            Log.d("Socket", "Button_Right: ${39}")
+        }
+
+        buttonUp.setOnClickListener {
+            //Handle Up
+            SocketHandler.emit(movementEvent, 40)
+            Log.d("Socket", "Button_Up: ${40}")
+        }
+
+        SocketHandler.on(handleGameStateEvent) { args ->
+            val gson = Gson()
+            val gameState: GameState = gson.fromJson(args[0] as String, GameState::class.java)
+            //Log.d("Socket", "GameState: ${gameState.players[0].playerOneName}")
+            snakeGameViewMultiplayer.startGame(gameState)
+        }
+
+
 
     }
 
@@ -82,4 +141,16 @@ class MultiplayerGameFragment : Fragment() {
         mp.stop()
         mp.release()
     }
+
+
+    private fun init(view: View){
+        buttonUp = view.findViewById(R.id.arrowUp)
+        buttonDown = view.findViewById(R.id.arrowDown)
+        buttonLeft = view.findViewById(R.id.arrowLeft)
+        buttonRight = view.findViewById(R.id.arrowRight)
+
+        movementEvent = getString(R.string.MOVEMENT)
+        handleGameStateEvent = getString(R.string.UPDATE_GAME_STATE)
+    }
 }
+

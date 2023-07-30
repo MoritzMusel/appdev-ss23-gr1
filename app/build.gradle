@@ -60,4 +60,7 @@ dependencies {
     implementation ('io.socket:socket.io-client:2.0.0') {
         exclude group: 'org.json', module: 'json'
     }
+
+    //Json
+    implementation 'com.google.code.gson:gson:2.8.8'
 }

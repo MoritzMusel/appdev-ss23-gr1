@@ -36,7 +36,7 @@ object SocketHandler {
         mSocket.on(event, callback)
     }
     @Synchronized
-    fun emit(event: String,  data: String) {
+    fun emit(event: String,  data: Any) {
         mSocket.emit(event, data)
     }
 
