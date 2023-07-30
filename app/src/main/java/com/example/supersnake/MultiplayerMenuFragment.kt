@@ -13,6 +13,9 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.airbnb.lottie.LottieAnimationView
 import io.socket.client.Socket
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 
 // TODO: Rename parameter arguments, choose names that match
@@ -32,7 +35,7 @@ class MultiplayerMenuFragment : Fragment() {
     private lateinit var roomNameEvent: String
     private lateinit var startGameEvent: String
     private lateinit var initEvent: String
-    private lateinit var playerNumber : String
+    private var playerNumber: Int = 0
     private lateinit var roomName: String
 
     // TODO: Rename and change types of parameters
@@ -49,6 +52,8 @@ class MultiplayerMenuFragment : Fragment() {
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
+            SocketHandler.closeConnection()
+            Log.d("Socket", "Disconnected")
             findNavController().navigate(R.id.action_multiplayerMenuFragment_to_menuFragment)
         }
     }
@@ -93,7 +98,6 @@ class MultiplayerMenuFragment : Fragment() {
             if(txtUsername.text.toString().isEmpty()){
                 //edit Text is empty
                 showToast("Please enter your username")
-
             }else{
                 val newGame = getString(R.string.NEW_GAME)
                 SocketHandler.emit(newGame, txtUsername.text.toString().trim())
@@ -102,12 +106,10 @@ class MultiplayerMenuFragment : Fragment() {
                 searchingAnimation.visibility = View.VISIBLE
             }
 
-
         }
 
         val btnToMultiplayerScreen: Button = view.findViewById<Button>(R.id.btnTestMulti)
         btnToMultiplayerScreen.setOnClickListener(){
-
             findNavController().navigate(R.id.multiplayerGameFragment)
         }
 
@@ -140,15 +142,18 @@ class MultiplayerMenuFragment : Fragment() {
          *
          */
         SocketHandler.on(initEvent) { args ->
-            playerNumber = args[0] as String
+            //playerNumber = args[0] as Int
             //validate which PlayerNumber 1 or 2
         }
 
         /**
          *
          */
-        SocketHandler.on(startGameEvent) { args ->
-            
+        SocketHandler.on(startGameEvent) {
+            GlobalScope.launch(Dispatchers.Main) {
+                // Navigiere zum MultiplayerGameFragment
+                findNavController().navigate(R.id.multiplayerGameFragment)
+            }
         }
     }
 
@@ -162,12 +167,9 @@ class MultiplayerMenuFragment : Fragment() {
     private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
-    override fun onPause() {
-        super.onPause()
-        // Close the socket connection
-        SocketHandler.closeConnection()
-        Log.d("Socket", "Disconnected")
-    }
+
+
+
 
 
 
