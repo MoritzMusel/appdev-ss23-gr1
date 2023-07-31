@@ -22,8 +22,8 @@
             android:background="@color/BG_COLOUR"
             android:orientation="vertical">
 
-            <SurfaceView
-                android:id="@+id/surfaceViewMultiplayer"
+            <com.example.supersnake.SnakeMultiplayerView
+                android:id="@+id/snakeMultiplayerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/BG_COLOUR" />

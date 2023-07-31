@@ -1,15 +1,10 @@
 package com.example.supersnake
 
 import android.annotation.SuppressLint
-import android.graphics.Canvas
-import android.graphics.Paint
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.SurfaceHolder
-import android.view.SurfaceView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -17,6 +12,8 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
+import io.socket.emitter.Emitter
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -38,8 +35,8 @@ private lateinit var movementEvent: String
 private lateinit var handleGameStateEvent: String
 private lateinit var gameState: GameState
 
-private var snakeThreadMultiplayer: SnakeThreadMultiplayer? = null
-private lateinit var surfaceView: SurfaceView
+private lateinit var snakeMultiplayerView: SnakeMultiplayerView
+
 
 
 
@@ -49,7 +46,7 @@ private lateinit var surfaceView: SurfaceView
  * Use the [MultiplayerGameFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MultiplayerGameFragment : Fragment(), SurfaceHolder.Callback {
+class MultiplayerGameFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -75,8 +72,8 @@ class MultiplayerGameFragment : Fragment(), SurfaceHolder.Callback {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_multiplayer_game, container, false)
-        surfaceView = view.findViewById(R.id.surfaceViewMultiplayer)
-        surfaceView.holder.addCallback(this)
+        //surfaceView = view.findViewById(R.id.surfaceViewMultiplayer)
+        //surfaceView.holder.addCallback(this)
 
         return view
     }
@@ -103,10 +100,13 @@ class MultiplayerGameFragment : Fragment(), SurfaceHolder.Callback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        snakeMultiplayerView = view.findViewById(R.id.snakeMultiplayerView)
         mp = MediaPlayer.create(context, R.raw.epic_dramatic)
         mp.isLooping = true
         mp.start()
         init(view)
+
+
 
 
 
@@ -137,10 +137,21 @@ class MultiplayerGameFragment : Fragment(), SurfaceHolder.Callback {
         SocketHandler.on(handleGameStateEvent) { args ->
             val gson = Gson()
              gameState = gson.fromJson(args[0] as String, GameState::class.java)
-            StateHandler.setState(gameState)
-            snakeThreadMultiplayer?.onDraw()
+            onSnakeEvent
+
         }
 
+    }
+    private val onSnakeEvent = Emitter.Listener { args ->
+        // Das Event wurde empfangen, Position des Quadrats aktualisieren
+        activity?.runOnUiThread(Runnable {
+            drawUpdate(gameState)
+        })
+    }
+
+    private fun drawUpdate(gameState: GameState){
+        //update stuff
+        snakeMultiplayerView.setStuff(gameState);
 
 
     }
@@ -161,27 +172,6 @@ class MultiplayerGameFragment : Fragment(), SurfaceHolder.Callback {
         movementEvent = getString(R.string.MOVEMENT)
         handleGameStateEvent = getString(R.string.UPDATE_GAME_STATE)
     }
-
-    override fun surfaceCreated(p0: SurfaceHolder) {
-       snakeThreadMultiplayer = SnakeThreadMultiplayer(p0, surfaceView)
-    }
-
-    override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
-        TODO("Not yet implemented")
-    }
-
-    override fun surfaceDestroyed(p0: SurfaceHolder) {
-        var retry = true
-        while (retry) {
-            try {
-                snakeThreadMultiplayer?.join()
-                retry = false
-            } catch (e: InterruptedException) {
-                // Retry
-            }
-        }
-    }
-
 
 }
 
