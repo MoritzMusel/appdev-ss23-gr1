@@ -39,7 +39,8 @@ class GameOverFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view =  inflater.inflate(R.layout.fragment_game_over, container, false)
-        view?.findViewById<TextView>(R.id.txtScore)?.text = "Your score: $score"
+        var realScore = score!!.toInt().minus(4)
+        view?.findViewById<TextView>(R.id.txtScore)?.text = "Your score: $realScore"
         // Inflate the layout for this fragment
         return view
     }
