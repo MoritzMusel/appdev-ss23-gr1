@@ -54,9 +54,11 @@ class MyDBHelper(context: Context) : SQLiteOpenHelper(context,"mydb",null,1){
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
 
     fun saveValue(value: Int) {
-        val db = writableDatabase
-        db.execSQL("INSERT OR REPLACE INTO myTable (id,value) VALUES (1,$value)")
-        db.close()
+        if(value > getValue()){
+            val db = writableDatabase
+            db.execSQL("INSERT OR REPLACE INTO myTable (id,value) VALUES (1,$value)")
+            db.close()
+        }
     }
 
 
