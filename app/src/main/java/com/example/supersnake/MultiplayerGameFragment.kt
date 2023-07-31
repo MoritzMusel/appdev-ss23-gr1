@@ -1,20 +1,22 @@
 package com.example.supersnake
 
 import android.annotation.SuppressLint
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.SurfaceHolder
+import android.view.SurfaceView
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import androidx.activity.addCallback
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
-import com.google.gson.stream.JsonReader
-import kotlin.system.exitProcess
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -34,7 +36,10 @@ private lateinit var buttonRight : ImageView
 
 private lateinit var movementEvent: String
 private lateinit var handleGameStateEvent: String
+private lateinit var gameState: GameState
 
+private var snakeThreadMultiplayer: SnakeThreadMultiplayer? = null
+private lateinit var surfaceView: SurfaceView
 
 
 
@@ -44,7 +49,7 @@ private lateinit var handleGameStateEvent: String
  * Use the [MultiplayerGameFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MultiplayerGameFragment : Fragment() {
+class MultiplayerGameFragment : Fragment(), SurfaceHolder.Callback {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -69,8 +74,11 @@ class MultiplayerGameFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_multiplayer_game, container, false)
+        val view = inflater.inflate(R.layout.fragment_multiplayer_game, container, false)
+        surfaceView = view.findViewById(R.id.surfaceViewMultiplayer)
+        surfaceView.holder.addCallback(this)
+
+        return view
     }
 
     companion object {
@@ -95,11 +103,12 @@ class MultiplayerGameFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val snakeGameViewMultiplayer: SnakeGameViewMultiplayer = view.findViewById(R.id.snakeGameViewMultiplayer)
         mp = MediaPlayer.create(context, R.raw.epic_dramatic)
         mp.isLooping = true
         mp.start()
         init(view)
+
+
 
         buttonLeft.setOnClickListener {
             //Handle Left
@@ -127,9 +136,9 @@ class MultiplayerGameFragment : Fragment() {
 
         SocketHandler.on(handleGameStateEvent) { args ->
             val gson = Gson()
-            val gameState: GameState = gson.fromJson(args[0] as String, GameState::class.java)
-            //Log.d("Socket", "GameState: ${gameState.players[0].playerOneName}")
-            snakeGameViewMultiplayer.startGame(gameState)
+             gameState = gson.fromJson(args[0] as String, GameState::class.java)
+            StateHandler.setState(gameState)
+            snakeThreadMultiplayer?.onDraw()
         }
 
 
@@ -152,5 +161,27 @@ class MultiplayerGameFragment : Fragment() {
         movementEvent = getString(R.string.MOVEMENT)
         handleGameStateEvent = getString(R.string.UPDATE_GAME_STATE)
     }
+
+    override fun surfaceCreated(p0: SurfaceHolder) {
+       snakeThreadMultiplayer = SnakeThreadMultiplayer(p0, surfaceView)
+    }
+
+    override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun surfaceDestroyed(p0: SurfaceHolder) {
+        var retry = true
+        while (retry) {
+            try {
+                snakeThreadMultiplayer?.join()
+                retry = false
+            } catch (e: InterruptedException) {
+                // Retry
+            }
+        }
+    }
+
+
 }
 
