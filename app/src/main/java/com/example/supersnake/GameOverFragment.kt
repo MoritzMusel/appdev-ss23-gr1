@@ -22,7 +22,6 @@ private const val ARG_PARAM1 = "score"
 class GameOverFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var score: String? = null
-    private lateinit var dbHelper: MyDBHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,10 +41,6 @@ class GameOverFragment : Fragment() {
         val view =  inflater.inflate(R.layout.fragment_game_over, container, false)
         var realScore = score!!.toInt().minus(4)
         view?.findViewById<TextView>(R.id.txtScore)?.text = "Your score: $realScore"
-
-        dbHelper = MyDBHelper(requireContext())
-        dbHelper.saveValue(realScore)
-
         // Inflate the layout for this fragment
         return view
     }

@@ -11,7 +11,7 @@ import android.widget.TextView
 import androidx.activity.ComponentActivity
 import kotlin.random.Random
 
-class DBActivity: ComponentActivity() {
+class MainActivity : ComponentActivity() {
 
     private lateinit var highScoreDisplay: TextView
     private lateinit var generator: Button
