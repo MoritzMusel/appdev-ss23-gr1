@@ -13,9 +13,10 @@
         android:theme="@style/Theme.AppCompat.NoActionBar"
         tools:targetApi="31">
         <activity
-            android:name=".UIActivity"
+            android:name=".MainActivity"
             android:exported="true"
-            android:screenOrientation="landscape">
+            android:label="@string/title_activity_main"
+            android:theme="@style/Theme.SuperSnake">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
