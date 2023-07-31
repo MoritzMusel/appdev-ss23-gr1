@@ -1,7 +1,6 @@
 package com.example.supersnake.snake
 
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 
 class Snake {
@@ -9,7 +8,7 @@ class Snake {
     private var direction = Direction.RIGHT
 
     private val paint = Paint().apply {
-        color = Color.GREEN
+        color = android.graphics.Color.parseColor("#69FF93")
         style = Paint.Style.FILL
     }
 

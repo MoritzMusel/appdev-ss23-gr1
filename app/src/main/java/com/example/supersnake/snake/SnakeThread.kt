@@ -12,23 +12,30 @@ import com.example.supersnake.snake.Snake.Companion.CELL_SIZE
 class SnakeThread(private val surfaceHolder: SurfaceHolder, private val surfaceView: SurfaceView, private val navigationCallback: CallbackNavigation) : Thread() {
 
     private var running = false
-    private val targetFPS = 10 // Adjust the desired frame rate
+    private val targetFPS = 60 // Adjust the desired frame rate
     private val frameTime = (1000 / targetFPS).toLong()
+    private var lastUpdateTime = System.currentTimeMillis()
+    // Adjust the speed of the snake here
+    private var moveInterval = 150L // Snake moves every 200 milliseconds
 
     val snake = Snake() // Create your Snake class instance here
     private val food = Food() // Create your Food class instance here
 
     private val backgroundPaint = Paint().apply {
-        color = Color.BLACK
+        color = Color.parseColor("#303030")
     }
 
     private val foodPaint = Paint().apply {
-        color = Color.RED
+        color = Color.parseColor("#FA1919")
         style = Paint.Style.FILL
     }
 
     private val snakePaint = Paint().apply {
-        color = Color.GREEN
+        color = Color.parseColor("#69FF93")
+        style = Paint.Style.FILL
+    }
+    private val snakePaintHead = Paint().apply {
+        color = Color.parseColor("#00AD31")
         style = Paint.Style.FILL
     }
 
@@ -43,17 +50,25 @@ class SnakeThread(private val surfaceHolder: SurfaceHolder, private val surfaceV
     }
 
     override fun run() {
-        var startTime: Long
-        var timeMillis: Long
-        var waitTime: Long
         while (running) {
-            startTime = System.currentTimeMillis()
-            updateGame()
-            drawGame()
-            timeMillis = System.currentTimeMillis() - startTime
-            waitTime = frameTime - timeMillis
-            if (waitTime > 0 && running) {
-                sleep(waitTime)
+            val currentTime = System.currentTimeMillis()
+            val elapsedTime = currentTime - lastUpdateTime
+
+            if (elapsedTime >= moveInterval) {
+                updateGame()
+                drawGame()
+                lastUpdateTime = currentTime
+            }
+
+            val timeMillis = System.currentTimeMillis() - currentTime
+            val sleepTime = frameTime - timeMillis
+
+            if (sleepTime > 0) {
+                try {
+                    sleep(sleepTime)
+                } catch (e: InterruptedException) {
+                    e.printStackTrace()
+                }
             }
         }
     }
@@ -68,6 +83,7 @@ class SnakeThread(private val surfaceHolder: SurfaceHolder, private val surfaceV
             Log.i("SnakeThread", "food hit")
             snake.grow()
             food.respawn(surfaceView.width, surfaceView.height, snake)
+            if(snake.bodyParts.size%3==0) moveInterval = (moveInterval*1.1).toLong()
         }
 
         // Check for collisions with the walls
@@ -92,7 +108,9 @@ class SnakeThread(private val surfaceHolder: SurfaceHolder, private val surfaceV
             it.drawRect(foodRect, foodPaint)
 
             // Draw the snake
-            for (bodyPart in snake.bodyParts) {
+            val snakeRect = Rect(snake.getHead().x, snake.getHead().y, snake.getHead().x + CELL_SIZE, snake.getHead().y + CELL_SIZE)
+            it.drawRect(snakeRect, snakePaintHead)
+            for (bodyPart in snake.bodyParts.subList(1, snake.bodyParts.size-1)) {
                 val snakeRect = Rect(bodyPart.x, bodyPart.y, bodyPart.x + CELL_SIZE, bodyPart.y + CELL_SIZE)
                 it.drawRect(snakeRect, snakePaint)
             }
