@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.navigation.fragment.findNavController
 
@@ -23,6 +24,8 @@ class ScoreFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+
+    private lateinit var dbHelper: MyDBHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +69,12 @@ class ScoreFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        dbHelper = MyDBHelper(requireContext())
+        var value: Int = dbHelper.getValue()
+
+        var scoreField = view.findViewById<TextView>(R.id.textViewScore)
+        scoreField.text = "Your Highscore: \n$value"
 
         val btnToMenu: Button = view.findViewById(R.id.btnMenu)
         btnToMenu.setOnClickListener(){

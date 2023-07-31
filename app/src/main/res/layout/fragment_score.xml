@@ -11,7 +11,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/textViewLoading"
+            android:id="@+id/textViewScore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/press_start_2p"
@@ -37,7 +37,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewLoading" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewScore" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
