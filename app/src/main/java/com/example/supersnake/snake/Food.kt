@@ -1,8 +1,12 @@
 package com.example.supersnake.snake
 
+import android.content.res.Resources
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Rect
+import com.example.supersnake.R
 import java.util.Random
 
 class Food {
@@ -27,6 +31,9 @@ class Food {
     fun draw(canvas: Canvas) {
         canvas.drawRect(x.toFloat(), y.toFloat(),
             (x + Snake.CELL_SIZE).toFloat(), (y + Snake.CELL_SIZE).toFloat(), paint)
+       // val applePic = BitmapFactory.decodeResource(Resources.getSystem(), R.drawable.apple)
+       // canvas.drawBitmap(applePic, Rect(0, 0, (x + Snake.CELL_SIZE), (y + Snake.CELL_SIZE)), Rect(0, 0, x, y), paint)
+
     }
 
     fun checkCollision(snake: Snake): Boolean {
