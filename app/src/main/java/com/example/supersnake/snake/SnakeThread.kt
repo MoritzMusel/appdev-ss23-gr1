@@ -104,8 +104,7 @@ class SnakeThread(private val surfaceHolder: SurfaceHolder, private val surfaceV
             it.drawRect(0f, 0f, it.width.toFloat(), it.height.toFloat(), backgroundPaint)
 
             // Draw the food
-            val foodRect = Rect(food.x, food.y, food.x + CELL_SIZE, food.y + CELL_SIZE)
-            it.drawRect(foodRect, foodPaint)
+            food.draw(canvas)
 
             // Draw the snake
             val snakeRect = Rect(snake.getHead().x, snake.getHead().y, snake.getHead().x + CELL_SIZE, snake.getHead().y + CELL_SIZE)
