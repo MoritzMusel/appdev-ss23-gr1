@@ -106,9 +106,7 @@ class MultiplayerGameFragment : Fragment() {
         mp.start()
         init(view)
 
-
-
-
+        println("OnViewCreated")
 
         buttonLeft.setOnClickListener {
             //Handle Left
@@ -137,16 +135,15 @@ class MultiplayerGameFragment : Fragment() {
         SocketHandler.on(handleGameStateEvent) { args ->
             val gson = Gson()
              gameState = gson.fromJson(args[0] as String, GameState::class.java)
-            onSnakeEvent
+            println(gameState)
+            activity?.runOnUiThread(Runnable {
+                println("After")
+                println(gameState)
+                drawUpdate(gameState)
+            })
 
         }
 
-    }
-    private val onSnakeEvent = Emitter.Listener { args ->
-        // Das Event wurde empfangen, Position des Quadrats aktualisieren
-        activity?.runOnUiThread(Runnable {
-            drawUpdate(gameState)
-        })
     }
 
     private fun drawUpdate(gameState: GameState){

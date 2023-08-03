@@ -6,6 +6,8 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
+import com.google.gson.Gson
 
 @SuppressLint("ResourceAsColor")
 class SnakeMultiplayerView @JvmOverloads constructor(
@@ -14,11 +16,68 @@ class SnakeMultiplayerView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    private val paintBackground = Paint();
-    private val paintSnake1 = Paint();
-    private val paintSnake2 = Paint();
-    private val foodColor = Paint();
+    private val paintBackground = Paint().apply {
+        color = ContextCompat.getColor(context, R.color.BG_COLOUR)
+    }
+
+    private val paintSnake1 = Paint().apply {
+        color = ContextCompat.getColor(context, R.color.SNAKE_COLOUR)
+    }
+
+    private val paintSnake2 = Paint().apply {
+        color = ContextCompat.getColor(context, R.color.SNAKE_COLOUR2)
+    }
+
+    private val foodColor = Paint().apply {
+        color = ContextCompat.getColor(context, R.color.FOOD_COLOUR)
+    }
     private lateinit var state: GameState
+    private var initialized = false;
+
+    val json = """
+{
+    "players": [
+        {
+            "pos": {
+                "x": 3,
+                "y": 10
+            },
+            "vel": {
+                "x": 0,
+                "y": 0
+            },
+            "snake": [
+                { "x": 1, "y": 10 },
+                { "x": 2, "y": 10 },
+                { "x": 3, "y": 10 }
+            ],
+            "points": 0,
+            "playerOneName": ""
+        },
+        {
+            "pos": {
+                "x": 18,
+                "y": 10
+            },
+            "vel": {
+                "x": 0,
+                "y": 0
+            },
+            "snake": [
+                { "x": 20, "y": 10 },
+                { "x": 19, "y": 10 },
+                { "x": 18, "y": 10 }
+            ],
+            "points": 0,
+            "playerTwoName": ""
+        }
+    ],
+    "food": {},
+    "gridsize": 20
+}
+"""
+
+    val gson = Gson()
 
     init {
         paintBackground.color = R.color.BG_COLOUR;
@@ -31,35 +90,52 @@ class SnakeMultiplayerView @JvmOverloads constructor(
     fun setStuff(gameState: GameState){
         this.state = gameState
         invalidate()
-
     }
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        val viewWidth = width
-        val viewHeight = height
-        canvas.drawRect(0f, 0f,viewWidth.toFloat(),viewHeight.toFloat(), paintBackground)
+        if(!initialized){
+            this.state = gson.fromJson(json, GameState::class.java)
+            initialized = true;
+            drawBackground(canvas)
+            val gridSizeWidth = width.toFloat() / state.gridsize
+            val gridSizeHeight = height.toFloat() / state.gridsize
 
-        if(isPropertyInitialized()){
-            val food = state.food
-            val gridSizeWidth = viewWidth / state.gridsize
-            val gridSizeHeight = viewWidth /state.gridsize
-            //drawFood
-            canvas.drawRect(food.x * gridSizeWidth.toFloat(), food.y * gridSizeHeight.toFloat() ,gridSizeWidth.toFloat(),gridSizeHeight.toFloat(), foodColor)
-
-            //drawPlayer 1
-            paintPlayer(canvas, state.players[0], gridSizeWidth.toFloat(),gridSizeHeight.toFloat(), paintSnake1)
-            //drawPlayer 2
-            paintPlayer(canvas, state.players[1], gridSizeWidth.toFloat(),gridSizeHeight.toFloat(), paintSnake1)
+            drawFood(canvas, state.food, gridSizeWidth, gridSizeHeight)
+            drawSnake(canvas, state.players[0], gridSizeWidth, gridSizeHeight, paintSnake1)
+            drawSnake(canvas, state.players[1], gridSizeWidth, gridSizeHeight, paintSnake2)
         }
+            val currentState = state ?: return // Safe access using the safe-call operator
 
+            val gridSizeWidth = width.toFloat() / currentState.gridsize
+            val gridSizeHeight = height.toFloat() / currentState.gridsize
 
+            drawFood(canvas, currentState.food, gridSizeWidth, gridSizeHeight)
+            drawSnake(canvas, currentState.players[0], gridSizeWidth, gridSizeHeight, paintSnake1)
+            drawSnake(canvas, currentState.players[1], gridSizeWidth, gridSizeHeight, paintSnake2)
 
     }
+
+    private fun drawBackground(canvas: Canvas) {
+        canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paintBackground)
+    }
+
+    private fun drawFood(canvas: Canvas, food: Food, width: Float, height: Float) {
+        canvas.drawRect(food.x * width, food.y * height, (food.x + 1) * width, (food.y + 1) * height, foodColor)
+    }
+
+    private fun drawSnake(canvas: Canvas, playerState: Player, width: Float, height: Float, paint: Paint) {
+        val snake = playerState.snake
+        for (cell in snake) {
+            canvas.drawRect(cell.x * width, cell.y * height, (cell.x + 1) * width, (cell.y + 1) * height, paint)
+        }
+    }
+
 
     private fun paintPlayer(canvas: Canvas, playerState: Player, width: Float, height: Float, color: Paint) {
         val snake = playerState.snake
         for (cell in snake) {
-            canvas?.drawRect(cell.x * width, cell.y * height, width, height, color)
+            canvas.drawRect(cell.x * width, cell.y * height, width, height, color)
 
         }
     }
