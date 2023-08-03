@@ -1,7 +1,5 @@
 package com.example.supersnake
 
-import io.socket.client.Socket
-
 data class GameState(
     val players: List<Player>,
     val food: Food,
