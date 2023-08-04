@@ -105,7 +105,7 @@ class SingleplayerFragment : Fragment(), SurfaceHolder.Callback, CallbackNavigat
     }
 
     override fun surfaceCreated(p0: SurfaceHolder) {
-        snakeThread = SnakeThread(p0, surfaceView, this)
+        snakeThread = SnakeThread(p0, surfaceView, this, requireContext())
         snakeThread?.startThread()
     }
 

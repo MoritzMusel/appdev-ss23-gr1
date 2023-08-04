@@ -1,5 +1,6 @@
 package com.example.supersnake.snake
 
+import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -9,7 +10,7 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import com.example.supersnake.snake.Snake.Companion.CELL_SIZE
 
-class SnakeThread(private val surfaceHolder: SurfaceHolder, private val surfaceView: SurfaceView, private val navigationCallback: CallbackNavigation) : Thread() {
+class SnakeThread(private val surfaceHolder: SurfaceHolder, private val surfaceView: SurfaceView, private val navigationCallback: CallbackNavigation, private val context:Context) : Thread() {
 
     private var running = false
     private val targetFPS = 60 // Adjust the desired frame rate
@@ -104,7 +105,7 @@ class SnakeThread(private val surfaceHolder: SurfaceHolder, private val surfaceV
             it.drawRect(0f, 0f, it.width.toFloat(), it.height.toFloat(), backgroundPaint)
 
             // Draw the food
-            food.draw(canvas)
+            food.draw(canvas, context)
 
             // Draw the snake
             val snakeRect = Rect(snake.getHead().x, snake.getHead().y, snake.getHead().x + CELL_SIZE, snake.getHead().y + CELL_SIZE)

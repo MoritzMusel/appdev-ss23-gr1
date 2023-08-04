@@ -62,7 +62,7 @@ class Snake {
     }
 
     companion object {
-        const val CELL_SIZE = 30 // Adjust the size of the cells as per your requirement
+        const val CELL_SIZE = 40 // Adjust the size of the cells as per your requirement
         const val START_X = CELL_SIZE // Starting position of the snake
         const val START_Y = CELL_SIZE
         private const val INITIAL_LENGTH = 4

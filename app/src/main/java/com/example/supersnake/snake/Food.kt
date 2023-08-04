@@ -1,6 +1,6 @@
 package com.example.supersnake.snake
 
-import android.content.res.Resources
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -9,15 +9,14 @@ import android.graphics.Paint
 import com.example.supersnake.R
 import java.util.Random
 
-
 class Food {
     private val paint = Paint().apply {
         color = Color.RED
         style = Paint.Style.FILL
     }
 
-    internal var x = Snake.CELL_SIZE*3
-    internal var y = Snake.CELL_SIZE*3
+    private var x = Snake.CELL_SIZE*3
+    private var y = Snake.CELL_SIZE*3
 
     fun respawn(width: Int, height: Int, snake: Snake) {
         val random = Random()
@@ -29,9 +28,10 @@ class Food {
         }
     }
 
-    fun draw(canvas: Canvas) {
-        val originalBitmap = BitmapFactory.decodeResource(Resources.getSystem(), R.drawable.snake_apple)
-        val imageBitmap = Bitmap.createScaledBitmap(originalBitmap, Snake.CELL_SIZE, Snake.CELL_SIZE, false)
+    fun draw(canvas: Canvas, context: Context) {
+
+        val originalBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.snake_apple)
+        val imageBitmap = Bitmap.createScaledBitmap(originalBitmap, Snake.CELL_SIZE + 10, Snake.CELL_SIZE + 10, false)
         originalBitmap.recycle()
 
         canvas?.let {
@@ -40,8 +40,8 @@ class Food {
                 canvas.drawBitmap(bitmap, x.toFloat(), y.toFloat(), null)
             }
         }
-        //val applePic = BitmapFactory.decodeResource(Resources.getSystem(), R.drawable.apple)
-       //canvas.drawBitmap(applePic, Rect(0, 0, (x + Snake.CELL_SIZE), (y + Snake.CELL_SIZE)), Rect(0, 0, x, y), paint)
+        originalBitmap.recycle()
+        imageBitmap.recycle()
     }
 
     fun checkCollision(snake: Snake): Boolean {
