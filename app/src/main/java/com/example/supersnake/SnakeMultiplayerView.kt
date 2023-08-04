@@ -118,16 +118,18 @@ class SnakeMultiplayerView @JvmOverloads constructor(
 
     private fun drawBackground(canvas: Canvas) {
         canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paintBackground)
+
+
     }
 
     private fun drawFood(canvas: Canvas, food: Food, width: Float, height: Float) {
-        canvas.drawRect(food.x * width, food.y * height, (food.x + 1) * width, (food.y + 1) * height, foodColor)
+        canvas.drawRect(food.x * width, food.y * height, food.x * width, food.y * height, foodColor)
     }
 
     private fun drawSnake(canvas: Canvas, playerState: Player, width: Float, height: Float, paint: Paint) {
         val snake = playerState.snake
         for (cell in snake) {
-            canvas.drawRect(cell.x * width, cell.y * height, (cell.x + 1) * width, (cell.y + 1) * height, paint)
+            canvas.drawRect(cell.x * width, cell.y * height, cell.x * width, cell.y* height, paint)
         }
     }
 
