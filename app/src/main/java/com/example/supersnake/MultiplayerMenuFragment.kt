@@ -86,6 +86,7 @@ class MultiplayerMenuFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        init()
 
         val searchingAnimation: LottieAnimationView = view.findViewById(R.id.animationSearching)
         searchingAnimation.visibility = View.GONE
@@ -106,17 +107,6 @@ class MultiplayerMenuFragment : Fragment() {
             }
 
         }
-
-        val btnToMultiplayerScreen: Button = view.findViewById<Button>(R.id.btnTestMulti)
-        btnToMultiplayerScreen.setOnClickListener(){
-            findNavController().navigate(R.id.multiplayerGameFragment)
-        }
-
-        connectEvent = getString(R.string.connect)//get the Event Name from string
-        roomNameEvent = getString(R.string.ROOM_NAME)
-        initEvent = getString(R.string.INIT)
-        startGameEvent = getString(R.string.START_GAME)
-
         SocketHandler.setSocket();
         SocketHandler.establishConnection()
 
@@ -142,9 +132,8 @@ class MultiplayerMenuFragment : Fragment() {
         SocketHandler.on(initEvent) { args ->
             //client.emit('Init',1) --> Number equal Player 1
             playerNumber = args[0] as Int
-            PlayerNumber(args[0] as Int)
-            //playerNumber = args[0] as Int
-            //validate which PlayerNumber 1 or 2
+
+
         }
 
         /**
@@ -153,13 +142,22 @@ class MultiplayerMenuFragment : Fragment() {
         SocketHandler.on(startGameEvent) {
             GlobalScope.launch(Dispatchers.Main) {
                 // navigate to MultiplayerGameFragment
-                findNavController().navigate(R.id.multiplayerGameFragment)
+                val bundle = Bundle()
+                bundle.putInt("player_number", playerNumber)
+                findNavController().navigate(R.id.multiplayerGameFragment, bundle)
             }
         }
     }
 
     private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun init(){
+        connectEvent = getString(R.string.connect)//get the Event Name from string
+        roomNameEvent = getString(R.string.ROOM_NAME)
+        initEvent = getString(R.string.INIT)
+        startGameEvent = getString(R.string.START_GAME)
     }
 
 

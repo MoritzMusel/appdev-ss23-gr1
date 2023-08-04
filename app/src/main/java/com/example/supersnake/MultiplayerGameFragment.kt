@@ -1,20 +1,25 @@
 package com.example.supersnake
 
 import android.annotation.SuppressLint
+import android.graphics.Paint
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.addCallback
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
-import io.socket.emitter.Emitter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import org.json.JSONException
+import org.json.JSONObject
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -39,9 +44,9 @@ private lateinit var gameState: GameState
 private lateinit var gameOverEvent: String
 
 private lateinit var snakeMultiplayerView: SnakeMultiplayerView
-
-
-
+private lateinit var winner: MultiplayerWinner
+private lateinit var gson : Gson
+private  var playerNumber : Int = 0
 
 
 /**
@@ -58,7 +63,9 @@ class MultiplayerGameFragment : Fragment() {
     lateinit var mp: MediaPlayer
     lateinit var player1TextView: TextView
     lateinit var player2TextView: TextView
-    var winner = 0
+    private val paintSnake1 = Paint()
+    private val paintSnake2 = Paint()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,7 +110,7 @@ class MultiplayerGameFragment : Fragment() {
             }
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "SuspiciousIndentation")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         snakeMultiplayerView = view.findViewById(R.id.snakeMultiplayerView)
@@ -114,6 +121,7 @@ class MultiplayerGameFragment : Fragment() {
         mp.start()
         init(view)
         gameOverEvent = getString(R.string.GAME_OVER)
+
 
         println("OnViewCreated")
 
@@ -142,11 +150,9 @@ class MultiplayerGameFragment : Fragment() {
         }
 
         SocketHandler.on(handleGameStateEvent) { args ->
-            val gson = Gson()
-             gameState = gson.fromJson(args[0] as String, GameState::class.java)
+            gameState = gson.fromJson(args[0] as String, GameState::class.java)
             println(gameState)
-            player1TextView.text = "Player 1: " + gameState.players[0].playerName
-            player2TextView.text = "Player 2: " + gameState.players[1].playerName
+            paintTextViews()
             activity?.runOnUiThread {
                 println("After")
                 println(gameState)
@@ -154,19 +160,23 @@ class MultiplayerGameFragment : Fragment() {
             }
         }
 
-        SocketHandler.on(gameOverEvent) {args ->
-            findNavController().navigate(R.id.action_multiplayerGameFragment_to_gameOverMultiplayerFragment)
-            winner = args[0] as Int
+        SocketHandler.on(gameOverEvent) { args ->
+            winner = gson.fromJson(args[0] as String, MultiplayerWinner::class.java)
+                GlobalScope.launch(Dispatchers.Main) {
+                    // navigate to MultiplayerGameFragment
+                    Log.d("Socket", "PlayerNumber: $playerNumber")
+                    val bundle = Bundle()
+                    bundle.putInt("player_number", playerNumber)
+                    bundle.putString("winner", winner.winner.toString())
+                    findNavController().navigate(R.id.gameOverMultiplayerFragment, bundle)
+
+            }
         }
-
-
-
     }
 
     private fun drawUpdate(gameState: GameState){
         //update stuff
         snakeMultiplayerView.setStuff(gameState);
-
 
     }
 
@@ -185,6 +195,21 @@ class MultiplayerGameFragment : Fragment() {
 
         movementEvent = getString(R.string.MOVEMENT)
         handleGameStateEvent = getString(R.string.UPDATE_GAME_STATE)
+        gson = Gson()
+        playerNumber = arguments?.getInt("player_number")!!
+        paintSnake1.color = context?.let { ContextCompat.getColor(it, R.color.SNAKE_COLOUR) }!!
+        paintSnake2.color = context?.let { ContextCompat.getColor(it, R.color.SNAKE_COLOUR2) }!!
+    }
+
+    @SuppressLint("ResourceAsColor", "SetTextI18n")
+    private fun paintTextViews(){
+
+        player1TextView.setTextColor(paintSnake1.color)
+        player2TextView.setTextColor(paintSnake2.color)
+
+        player2TextView.text = "Player 2:\n${gameState.players[1].playerName}"
+        player1TextView.text = "Player 1:\n${gameState.players[0].playerName}"
+
     }
 
 }
