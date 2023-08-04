@@ -99,6 +99,7 @@ class SnakeMultiplayerView @JvmOverloads constructor(
             this.state = gson.fromJson(json, GameState::class.java)
             initialized = true;
             drawBackground(canvas)
+            drawGrid(canvas)
             val gridSizeWidth = width.toFloat() / state.gridsize
             val gridSizeHeight = height.toFloat() / state.gridsize
 
@@ -106,6 +107,7 @@ class SnakeMultiplayerView @JvmOverloads constructor(
             drawSnake(canvas, state.players[0], gridSizeWidth, gridSizeHeight, paintSnake1)
             drawSnake(canvas, state.players[1], gridSizeWidth, gridSizeHeight, paintSnake2)
         }
+            drawGrid(canvas)
             val currentState = state ?: return // Safe access using the safe-call operator
 
             val gridSizeWidth = width.toFloat() / currentState.gridsize
@@ -117,33 +119,41 @@ class SnakeMultiplayerView @JvmOverloads constructor(
 
     }
 
-    private fun drawBackground(canvas: Canvas) {
-        val numRows = 3
-        val numCols = 3
+    private fun drawGrid(canvas: Canvas) {
+        val numRows = 40
+        val numCols = 40
+
+        println(width.toFloat())
+        println(height.toFloat())
 
         val cellWidth = width.toFloat() / numCols
         val cellHeight = height.toFloat() / numRows
 
-        val linePaint = Paint().apply {
-            color = Color.BLACK  // Farbe der Linien
-            strokeWidth = 2f    // Breite der Linien
+        val gridPaint = Paint().apply {
+            color = Color.RED
+            style = Paint.Style.STROKE
+            strokeWidth = 2f
         }
 
-        // Zeichne das Gitter (horizontale Linien)
-        for (row in 1 until numRows) {
-            val y = row * cellHeight
-            canvas.drawLine(0f, y, width.toFloat(), y, linePaint)
+        val cellPaint = Paint().apply {
+            color = Color.BLUE
+            style = Paint.Style.FILL
         }
 
-        // Zeichne das Gitter (vertikale Linien)
-        for (col in 1 until numCols) {
-            val x = col * cellWidth
-            canvas.drawLine(x, 0f, x, height.toFloat(), linePaint)
+        for (row in 0 until numRows) {
+            for (col in 0 until numCols) {
+                val left = col * cellWidth
+                val top = row * cellHeight
+                val right = left + cellWidth
+                val bottom = top + cellHeight
+                canvas.drawRect(left, top, right, bottom, cellPaint)
+                canvas.drawRect(left, top, right, bottom, gridPaint)
+            }
         }
+    }
 
+    private fun drawBackground(canvas: Canvas) {
         canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paintBackground)
-
-
     }
 
     private fun drawFood(canvas: Canvas, food: Food, width: Float, height: Float) {

@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -53,6 +55,8 @@ class MultiplayerGameFragment : Fragment() {
 
 
     lateinit var mp: MediaPlayer
+    lateinit var player1TextView: TextView
+    lateinit var player2TextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +78,6 @@ class MultiplayerGameFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_multiplayer_game, container, false)
         //surfaceView = view.findViewById(R.id.surfaceViewMultiplayer)
         //surfaceView.holder.addCallback(this)
-
         return view
     }
 
@@ -98,9 +101,12 @@ class MultiplayerGameFragment : Fragment() {
             }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         snakeMultiplayerView = view.findViewById(R.id.snakeMultiplayerView)
+        player1TextView = view.findViewById(R.id.txtPlayer1)
+        player2TextView = view.findViewById(R.id.txtPlayer2)
         mp = MediaPlayer.create(context, R.raw.epic_dramatic)
         mp.isLooping = true
         mp.start()
@@ -136,11 +142,13 @@ class MultiplayerGameFragment : Fragment() {
             val gson = Gson()
              gameState = gson.fromJson(args[0] as String, GameState::class.java)
             println(gameState)
-            activity?.runOnUiThread(Runnable {
+            player1TextView.text = "Player 1: " + gameState.players[0].playerName
+            player2TextView.text = "Player 2: " + gameState.players[1].playerName
+            activity?.runOnUiThread {
                 println("After")
                 println(gameState)
                 drawUpdate(gameState)
-            })
+            }
 
         }
 

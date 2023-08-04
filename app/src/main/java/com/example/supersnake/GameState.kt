@@ -11,7 +11,7 @@ data class Player(
     val vel: Velocity,
     val snake: List<Position>,
     val points: Int,
-    val playerOneName: String,
+    val playerName: String,
 )
 
 data class Position(
