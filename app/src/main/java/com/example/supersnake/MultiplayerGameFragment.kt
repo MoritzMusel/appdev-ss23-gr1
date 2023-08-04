@@ -36,6 +36,7 @@ private lateinit var buttonRight : ImageView
 private lateinit var movementEvent: String
 private lateinit var handleGameStateEvent: String
 private lateinit var gameState: GameState
+private lateinit var gameOverEvent: String
 
 private lateinit var snakeMultiplayerView: SnakeMultiplayerView
 
@@ -57,6 +58,7 @@ class MultiplayerGameFragment : Fragment() {
     lateinit var mp: MediaPlayer
     lateinit var player1TextView: TextView
     lateinit var player2TextView: TextView
+    var winner = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,6 +113,7 @@ class MultiplayerGameFragment : Fragment() {
         mp.isLooping = true
         mp.start()
         init(view)
+        gameOverEvent = getString(R.string.GAME_OVER)
 
         println("OnViewCreated")
 
@@ -149,8 +152,14 @@ class MultiplayerGameFragment : Fragment() {
                 println(gameState)
                 drawUpdate(gameState)
             }
-
         }
+
+        SocketHandler.on(gameOverEvent) {args ->
+            findNavController().navigate(R.id.action_multiplayerGameFragment_to_gameOverMultiplayerFragment)
+            winner = args[0] as Int
+        }
+
+
 
     }
 

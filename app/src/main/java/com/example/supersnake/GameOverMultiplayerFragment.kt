@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.navigation.fragment.findNavController
 
@@ -23,6 +24,8 @@ class GameOverMultiplayerFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+
+    private lateinit var winnerText: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +70,9 @@ class GameOverMultiplayerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        winnerText = view.findViewById(R.id.txtWinner)
+        winnerText.text = "I won"
 
         val btnToMenu: Button = view.findViewById<Button>(R.id.btnMultiToMenu)
         btnToMenu.setOnClickListener(){

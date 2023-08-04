@@ -140,6 +140,9 @@ class MultiplayerMenuFragment : Fragment() {
          *
          */
         SocketHandler.on(initEvent) { args ->
+            //client.emit('Init',1) --> Number equal Player 1
+            playerNumber = args[0] as Int
+            PlayerNumber(args[0] as Int)
             //playerNumber = args[0] as Int
             //validate which PlayerNumber 1 or 2
         }
