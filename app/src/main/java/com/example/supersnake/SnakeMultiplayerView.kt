@@ -3,6 +3,7 @@ package com.example.supersnake
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
@@ -117,8 +118,31 @@ class SnakeMultiplayerView @JvmOverloads constructor(
     }
 
     private fun drawBackground(canvas: Canvas) {
+        val numRows = 3
+        val numCols = 3
+
+        val cellWidth = width.toFloat() / numCols
+        val cellHeight = height.toFloat() / numRows
+
+        val linePaint = Paint().apply {
+            color = Color.BLACK  // Farbe der Linien
+            strokeWidth = 2f    // Breite der Linien
+        }
+
+        // Zeichne das Gitter (horizontale Linien)
+        for (row in 1 until numRows) {
+            val y = row * cellHeight
+            canvas.drawLine(0f, y, width.toFloat(), y, linePaint)
+        }
+
+        // Zeichne das Gitter (vertikale Linien)
+        for (col in 1 until numCols) {
+            val x = col * cellWidth
+            canvas.drawLine(x, 0f, x, height.toFloat(), linePaint)
+        }
+
         canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paintBackground)
-        
+
 
     }
 
