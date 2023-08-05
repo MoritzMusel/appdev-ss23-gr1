@@ -1,19 +1,28 @@
 package com.example.supersnake
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.airbnb.lottie.LottieAnimationView
+
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+
 
 /**
  * A simple [Fragment] subclass.
@@ -21,9 +30,18 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class MultiplayerMenuFragment : Fragment() {
+    private lateinit var connectEvent: String
+    private lateinit var roomNameEvent: String
+    private lateinit var startGameEvent: String
+    private lateinit var initEvent: String
+    private var playerNumber: Int = 0
+    private lateinit var roomName: String
+
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+
+    private lateinit var txtUsername: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,14 +51,15 @@ class MultiplayerMenuFragment : Fragment() {
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
+            SocketHandler.closeConnection()
+            Log.d("Socket", "Disconnected")
             findNavController().navigate(R.id.action_multiplayerMenuFragment_to_menuFragment)
         }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_multiplayer_menu, container, false)
     }
@@ -67,20 +86,93 @@ class MultiplayerMenuFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        init()
 
         val searchingAnimation: LottieAnimationView = view.findViewById(R.id.animationSearching)
         searchingAnimation.visibility = View.GONE
 
         val btnPlayerSearch: Button = view.findViewById(R.id.btnSearchPlayer)
         btnPlayerSearch.setOnClickListener(){
-            btnPlayerSearch.visibility = View.GONE
-            searchingAnimation.visibility = View.VISIBLE
+
+            txtUsername = view.findViewById(R.id.txtUsername)
+            if(txtUsername.text.toString().isEmpty()){
+                //edit Text is empty
+                showToast("Please enter your username")
+            }else{
+                val newGame = getString(R.string.NEW_GAME)
+                SocketHandler.emit(newGame, txtUsername.text.toString().trim())
+                Log.d("txtUsername", "Username: ${txtUsername.text}")
+                btnPlayerSearch.visibility = View.GONE
+                searchingAnimation.visibility = View.VISIBLE
+            }
+
+        }
+        SocketHandler.setSocket();
+        SocketHandler.establishConnection()
+
+
+        /**
+         *
+         */
+        SocketHandler.on(connectEvent) { args ->
+            Log.d("Socket", "You connected with id: ${SocketHandler.getSocket().id()}")
         }
 
-        val btnToMultiplayerScreen: Button = view.findViewById<Button>(R.id.btnTestMulti)
-        btnToMultiplayerScreen.setOnClickListener(){
+        /**
+         *
+         */
+        SocketHandler.on(roomNameEvent) { args ->
+           roomName = args[0] as String
+            Log.d("Socket", "RoomName: $roomName")
+        }
 
-            findNavController().navigate(R.id.multiplayerGameFragment)
+        /**
+         *
+         */
+        SocketHandler.on(initEvent) { args ->
+            //client.emit('Init',1) --> Number equal Player 1
+            playerNumber = args[0] as Int
+
+
+        }
+
+        /**
+         *
+         */
+        SocketHandler.on(startGameEvent) {
+            GlobalScope.launch(Dispatchers.Main) {
+                // navigate to MultiplayerGameFragment
+                val bundle = Bundle()
+                bundle.putInt("player_number", playerNumber)
+                findNavController().navigate(R.id.multiplayerGameFragment, bundle)
+            }
         }
     }
+
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun init(){
+        connectEvent = getString(R.string.connect)//get the Event Name from string
+        roomNameEvent = getString(R.string.ROOM_NAME)
+        initEvent = getString(R.string.INIT)
+        startGameEvent = getString(R.string.START_GAME)
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

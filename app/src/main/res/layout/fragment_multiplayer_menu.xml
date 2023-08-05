@@ -46,15 +46,6 @@
             app:layout_constraintVertical_bias="0.5"
             />
 
-        <Button
-            android:id="@+id/btnTestMulti"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:text="to multiplayer screen"
-            app:layout_constraintStart_toEndOf="@+id/btnSearchPlayer"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnSearchPlayer"
             android:layout_width="260dp"

@@ -66,6 +66,7 @@ socket.on('UNKNOWN_CODE', handleUnknownCode);
 socket.on('TOO_MANY_PLAYERS', handleTooManyPlayers);
 socket.on('PLAYER_TWO_NAME', handlePlayerTwoName);
 socket.on('PLAYER_ONE_NAME', handlePlayerOneName);
+socket.on("START_GAME", startGame)
 
 
 const gameScreen = document.getElementById('gameScreen');
@@ -90,7 +91,7 @@ function newGame() {
 function joinGame() {
   const code = gamePlayerName.value;//save the PlayerName in code
   socket.emit('NEW_GAME', code);//emit to ther server "JOIN_GAME" with code as Attribut
-  init(code);
+  //init(code);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,7 +100,7 @@ let canvas, ctx;
 let playerNumber;
 let gameActive = false;
 
-function init(code) {
+function startGame() {
   initialScreen.style.display = "none";
   gameScreen.style.display = "block";
 
@@ -116,9 +117,7 @@ function init(code) {
 }
 
 
-function keydown(e) {
-  socket.emit('MOVEMENT', e.keyCode);
-}
+
 
 
 function paintGame(state) {
@@ -147,9 +146,7 @@ function paintPlayer(playerState, size, colour) {
   }
 }
 
-function handleInit(number) {
-  playerNumber = number;
-}
+
 
 function handleGameState(gameState) {
   if (!gameActive) {
@@ -157,6 +154,10 @@ function handleGameState(gameState) {
   }
   gameState = JSON.parse(gameState);
   requestAnimationFrame(() => paintGame(gameState));
+}
+
+function handleInit(number) {
+  playerNumber = number;
 }
 
 function handleGameOver(data) {
@@ -203,6 +204,10 @@ function reset() {
   gameCodeInput.value = '';
   initialScreen.style.display = "block";
   gameScreen.style.display = "none";
+}
+
+function keydown(e) {
+  socket.emit('MOVEMENT', e.keyCode);
 }
 
 

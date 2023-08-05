@@ -34,7 +34,7 @@ android {
 
 dependencies {
     def nav_version = "2.6.0"
-    def fragment_version = "1.6.0"
+    def fragment_version = "1.6.1"
 
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -55,4 +55,12 @@ dependencies {
 
     //Lottiefiles
     implementation "com.airbnb.android:lottie:6.0.1"
+
+    //Socket.io
+    implementation ('io.socket:socket.io-client:2.0.0') {
+        exclude group: 'org.json', module: 'json'
+    }
+
+    //Json
+    implementation 'com.google.code.gson:gson:2.9.0'
 }
