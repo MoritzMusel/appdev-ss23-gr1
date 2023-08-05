@@ -17,33 +17,33 @@ function createGameState() {
     players: [{//player 1
       pos: {
         x: 3,
-        y: 10,
+        y: 20,
       },
       vel: {
         x: 1,
         y: 0,
       },
       snake: [
-        {x: 1, y: 10},
-        {x: 2, y: 10},
-        {x: 3, y: 10},
+        {x: 1, y: 20},
+        {x: 2, y: 20},
+        {x: 3, y: 20},
       ],
       points: 0,
       playerOneName: "",
 
     }, {//player 2
       pos: {
-        x: 18,
-        y: 10,
+        x: 38,
+        y: 20,
       },
       vel: {
-        x: 0,
+        x: -1,
         y: 0,
       },
       snake: [
-        {x: 20, y: 10},
-        {x: 19, y: 10},
-        {x: 18, y: 10},
+        {x: 40, y: 20},
+        {x: 39, y: 20},
+        {x: 38, y: 20},
       ],
       points: 0,
       playerTwoName: ""
@@ -144,11 +144,6 @@ function gameLoop(state) {
     }
   }
   
-
-
-
-
-
   return false;
 }
 
@@ -174,38 +169,31 @@ function randomFood(state) {
   state.food = food;//if the food is on an empty position
 }
 
-function getUpdatedVelocity(keyCode) {
+function getUpdatedVelocity(keyCode, velOld) {
   switch (keyCode) {
     case 37: { // left
-      return { x: -1, y: 0 };
+      if(velOld.x != 1){
+        return { x: -1, y: 0 };
+      }
     }
-    case 38: { // down
-      return { x: 0, y: -1 };
+    case 40: { // down
+      if(velOld.y != 1){
+        return { x: 0, y: -1 };
+      }
+  
     }
     case 39: { // right
-      return { x: 1, y: 0 };
+      if(velOld.x != -1){
+        return { x: 1, y: 0 };
+      }
+      
     }
-    case 40: { // up
-      return { x: 0, y: 1 };
+    case 38: { // up
+      if(velOld.y != -1){
+        return { x: 0, y: 1 };
+      }
+      
     }
   }
 }
 
-////////////////////////////////////////////////////////////////
-
-function getUpdatedVelocityAndroid(keyCode) {
-  switch (keyCode) {
-    case 37: { // left
-      return { x: -1, y: 0 };
-    }
-    case 38: { // down
-      return { x: 0, y: -1 };
-    }
-    case 39: { // right
-      return { x: 1, y: 0 };
-    }
-    case 40: { // up
-      return { x: 0, y: 1 };
-    }
-  }
-}
