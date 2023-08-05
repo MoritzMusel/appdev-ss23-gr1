@@ -98,7 +98,6 @@ class MultiplayerMenuFragment : Fragment() {
 
             txtUsername = view.findViewById(R.id.txtUsername)
             if(txtUsername.text.toString().isEmpty()){
-                //edit Text is empty
                 showToast("Please enter your username")
             }else{
                 val newGame = getString(R.string.NEW_GAME)
@@ -114,14 +113,17 @@ class MultiplayerMenuFragment : Fragment() {
 
 
         /**
-         *
+         * This code block listens for the "connectEvent" on the SocketHandler. Upon receiving the event,
+         * it logs a message indicating the successful connection along with the socket's ID.
          */
         SocketHandler.on(connectEvent) { args ->
-            Log.d("Socket", "You connected with id: ${SocketHandler.getSocket().id()}")
+            Log.d("Socket", "You connected with id: ${SocketHandler.getSocket()?.id()}")
         }
 
         /**
-         *
+         * This code block listens for the "roomNameEvent" on the SocketHandler. Upon receiving the event,
+         * it extracts the room name from the arguments and updates the "roomName" variable.
+         * Additionally, it logs the room name using the Android Log utility.
          */
         SocketHandler.on(roomNameEvent) { args ->
            roomName = args[0] as String
@@ -129,17 +131,18 @@ class MultiplayerMenuFragment : Fragment() {
         }
 
         /**
-         *
+         * This code block listens for the "initEvent" on the SocketHandler. Upon receiving the event,
+         * it extracts the player number from the arguments and updates the "playerNumber" variable.
          */
         SocketHandler.on(initEvent) { args ->
-            //client.emit('Init',1) --> Number equal Player 1
             playerNumber = args[0] as Int
-
-
         }
 
         /**
-         *
+         * This code block listens for the "startGameEvent" on the SocketHandler. Upon receiving the event,
+         * it launches a coroutine on the main dispatcher to navigate to the MultiplayerGameFragment.
+         * It also sends an integer value "player_number" as a bundle argument to the destination fragment.
+         * @param playerNumber The player number to be sent as a bundle argument.
          */
         SocketHandler.on(startGameEvent) {
             GlobalScope.launch(Dispatchers.Main) {
@@ -151,10 +154,20 @@ class MultiplayerMenuFragment : Fragment() {
         }
     }
 
+
+    /**
+     * Displays a short-duration toast message.
+     * This method displays a short-duration toast message with the provided message text.
+     * @param message The message text to be displayed in the toast.
+     */
     private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
+    /**
+     * This method initializes event-related string values by fetching them from resources.
+     * It retrieves the event names used in the application from string resources.
+     */
     private fun init(){
         connectEvent = getString(R.string.connect)//get the Event Name from string
         roomNameEvent = getString(R.string.ROOM_NAME)

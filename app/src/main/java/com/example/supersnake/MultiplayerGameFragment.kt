@@ -47,6 +47,13 @@ private lateinit var snakeMultiplayerView: SnakeMultiplayerView
 private lateinit var winner: MultiplayerWinner
 private lateinit var gson : Gson
 private  var playerNumber : Int = 0
+lateinit var mp: MediaPlayer
+@SuppressLint("StaticFieldLeak")
+private lateinit var player1TextView: TextView
+@SuppressLint("StaticFieldLeak")
+private lateinit var player2TextView: TextView
+private val paintSnake1 = Paint()
+private val paintSnake2 = Paint()
 
 
 /**
@@ -58,13 +65,6 @@ class MultiplayerGameFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-
-
-    lateinit var mp: MediaPlayer
-    lateinit var player1TextView: TextView
-    lateinit var player2TextView: TextView
-    private val paintSnake1 = Paint()
-    private val paintSnake2 = Paint()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,8 +85,6 @@ class MultiplayerGameFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_multiplayer_game, container, false)
-        //surfaceView = view.findViewById(R.id.surfaceViewMultiplayer)
-        //surfaceView.holder.addCallback(this)
         return view
     }
 
@@ -113,42 +111,62 @@ class MultiplayerGameFragment : Fragment() {
     @SuppressLint("SetTextI18n", "SuspiciousIndentation")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        snakeMultiplayerView = view.findViewById(R.id.snakeMultiplayerView)
-        player1TextView = view.findViewById(R.id.txtPlayer1)
-        player2TextView = view.findViewById(R.id.txtPlayer2)
-        mp = MediaPlayer.create(context, R.raw.epic_dramatic)
+        init(view)
         mp.isLooping = true
         mp.start()
-        init(view)
-        gameOverEvent = getString(R.string.GAME_OVER)
 
 
-        println("OnViewCreated")
-
+        /**
+         * This code block sets a click listener for the left button. When the button is clicked,
+         * it emits a movement event with the value 37 using SocketHandler.
+         * Additionally, it logs the action using the Android Log utility.
+         */
         buttonLeft.setOnClickListener {
             //Handle Left
             SocketHandler.emit(movementEvent, 37)
             Log.d("Socket", "Button_Left: ${37}")
         }
 
+
+        /**
+         * This code block sets a click listener for the down button. When the button is clicked,
+         * it emits a movement event with the value 38 using SocketHandler.
+         * Additionally, it logs the action using the Android Log utility.
+         */
         buttonDown.setOnClickListener {
             //Handle Down
             SocketHandler.emit(movementEvent, 38)
             Log.d("Socket", "Button_Down: ${38}")
         }
 
+
+        /**
+         * This code block sets a click listener for the right button. When the button is clicked,
+         * it emits a movement event with the value 39 using SocketHandler.
+         * Additionally, it logs the action using the Android Log utility.
+         */
         buttonRight.setOnClickListener {
             //Handle Right
             SocketHandler.emit(movementEvent, 39)
             Log.d("Socket", "Button_Right: ${39}")
         }
 
+        /**
+         * This code block sets a click listener for the up button. When the button is clicked,
+         * it emits a movement event with the value 40 using SocketHandler.
+         * Additionally, it logs the action using the Android Log utility.
+         */
         buttonUp.setOnClickListener {
             //Handle Up
             SocketHandler.emit(movementEvent, 40)
             Log.d("Socket", "Button_Up: ${40}")
         }
 
+        /**
+         * This code block listens for the "handleGameStateEvent" on the SocketHandler. Upon receiving the event,
+         * it deserializes the received JSON string into a GameState object, updates the game state,
+         * updates the TextViews and draws the updated game state on the UI thread.
+         */
         SocketHandler.on(handleGameStateEvent) { args ->
             gameState = gson.fromJson(args[0] as String, GameState::class.java)
             println(gameState)
@@ -160,33 +178,52 @@ class MultiplayerGameFragment : Fragment() {
             }
         }
 
+        /**
+         * This code block listens for the "gameOverEvent" on the SocketHandler. Upon receiving the event,
+         * it deserializes the received JSON string into a MultiplayerWinner object to determine the winner.
+         * It then launches a coroutine on the main dispatcher to navigate to the Game Over fragment,
+         * passing the player number and winner information as bundle arguments.
+         */
         SocketHandler.on(gameOverEvent) { args ->
             winner = gson.fromJson(args[0] as String, MultiplayerWinner::class.java)
                 GlobalScope.launch(Dispatchers.Main) {
-                    // navigate to MultiplayerGameFragment
+
                     Log.d("Socket", "PlayerNumber: $playerNumber")
                     val bundle = Bundle()
                     bundle.putInt("player_number", playerNumber)
                     bundle.putString("winner", winner.winner.toString())
-                    findNavController().navigate(R.id.gameOverMultiplayerFragment, bundle)
-
+                    findNavController().navigate(R.id.gameOverMultiplayerFragment, bundle)// navigate to MultiplayerGameFragment
             }
         }
     }
 
+    /**
+     * This method updates the SnakeMultiplayerView with the provided GameState, causing the view
+     * to be redrawn based on the updated game state.
+     * @param gameState The latest GameState containing the updated game information.
+     */
     private fun drawUpdate(gameState: GameState){
-        //update stuff
         snakeMultiplayerView.setStuff(gameState);
-
     }
 
+    /**
+     * Pauses the activity and releases media player resources.
+     * This method is called when the activity is paused. It invokes the superclass's onPause method,
+     * stops and releases the media player to free up resources.
+     */
     override fun onPause() {
         super.onPause()
         mp.stop()
         mp.release()
     }
 
-
+    /**
+    * This method initializes UI elements such as buttons and sets up various properties
+    * for the game view based on the provided view parameter.
+    * It also initializes event-related string values, Gson object, player number,
+    * and snake colors for players.
+    * @param view The view representing the game interface.
+    */
     private fun init(view: View){
         buttonUp = view.findViewById(R.id.arrowUp)
         buttonDown = view.findViewById(R.id.arrowDown)
@@ -199,11 +236,21 @@ class MultiplayerGameFragment : Fragment() {
         playerNumber = arguments?.getInt("player_number")!!
         paintSnake1.color = context?.let { ContextCompat.getColor(it, R.color.SNAKE_COLOUR) }!!
         paintSnake2.color = context?.let { ContextCompat.getColor(it, R.color.SNAKE_COLOUR2) }!!
+        gameOverEvent = getString(R.string.GAME_OVER)
+        snakeMultiplayerView = view.findViewById(R.id.snakeMultiplayerView)
+        player1TextView = view.findViewById(R.id.txtPlayer1)
+        player2TextView = view.findViewById(R.id.txtPlayer2)
+        mp = MediaPlayer.create(context, R.raw.epic_dramatic)
     }
 
+    /**
+     * Applies color and text to TextView elements.
+     * This method modifies the appearance of TextView elements by setting text and text color.
+     * It sets the text color of the player1TextView and player2TextView based on snake colors.
+     * Additionally, it updates the text content of both TextViews to display player names.
+     */
     @SuppressLint("ResourceAsColor", "SetTextI18n")
     private fun paintTextViews(){
-
         player1TextView.setTextColor(paintSnake1.color)
         player2TextView.setTextColor(paintSnake2.color)
 
