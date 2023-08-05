@@ -11,7 +11,6 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.navigation.fragment.findNavController
-import com.google.gson.Gson
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -34,6 +33,7 @@ class GameOverMultiplayerFragment : Fragment() {
     private var playerNumber : Int = 0
     private lateinit var winner: String
     private lateinit var winnerText: TextView
+    private var won = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,8 +53,17 @@ class GameOverMultiplayerFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val layout: Int;
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_game_over_multiplayer, container, false)
+        playerNumber = arguments?.getInt("player_number")!!
+        winner = arguments?.getString("winner")!!
+        if(playerNumber == winner.toInt()){
+            won = true
+            layout = R.layout.fragment_game_over_multiplayer_won
+        }else{
+            layout = R.layout.fragment_game_over_multiplayer_lost
+        }
+        return inflater.inflate(layout, container, false)
     }
 
     companion object {
@@ -80,27 +89,15 @@ class GameOverMultiplayerFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        init(view)
+        winnerText = view.findViewById(R.id.txtWinner)
         Log.d("Socket", "PlayerNumber: $playerNumber")
         Log.d("Socket", "Winner: $winner")
 
-        if(playerNumber == winner.toInt()){
-            winnerText.text = "I won"
-        }else{
-            winnerText.text = "You lose"
-        }
+        winnerText.text = if (won) getString(R.string.WON) else getString(R.string.LOST)
 
         val btnToMenu: Button = view.findViewById<Button>(R.id.btnMultiToMenu)
         btnToMenu.setOnClickListener(){
             findNavController().navigate(R.id.action_gameOverMultiplayerFragment_to_menuFragment)
         }
     }
-
-    private fun init(view: View){
-        playerNumber = arguments?.getInt("player_number")!!
-        winner = arguments?.getString("winner")!!
-        winnerText = view.findViewById(R.id.txtWinner)
-    }
-
-
 }

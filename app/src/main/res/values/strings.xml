@@ -8,6 +8,8 @@
     <!-- Socket.IO Events-->
     <string name="connect">"connect"</string>
     <string name="INIT">"INIT"</string>
+    <string name="WON">"You won"</string>
+    <string name="LOST">"You lost"</string>
     <string name="UPDATE_GAME_STATE">"UPDATE_GAME_STATE"</string>
     <string name="GAME_OVER">"GAME_OVER"</string>
     <string name="ROOM_NAME">"ROOM_NAME"</string>
