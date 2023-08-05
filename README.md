@@ -14,3 +14,12 @@ https://github.com/MarcelEwinger/SuperSnake_Backend/tree/master
 ## Singleplayer
 *Simply click on the "Singleplayer" field to start playing the game. You can check your score in the "Score" section*
 
+## Music
+*To prevent any damage to your hearing, we advise you to reduce the volume.*
+
+
+
+
+
+
+
