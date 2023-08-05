@@ -18,8 +18,7 @@ import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.json.JSONException
-import org.json.JSONObject
+
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -187,8 +186,7 @@ class MultiplayerGameFragment : Fragment() {
         SocketHandler.on(gameOverEvent) { args ->
             winner = gson.fromJson(args[0] as String, MultiplayerWinner::class.java)
                 GlobalScope.launch(Dispatchers.Main) {
-
-                    Log.d("Socket", "PlayerNumber: $playerNumber")
+                    //Log.d("Socket", "PlayerNumber: $playerNumber")
                     val bundle = Bundle()
                     bundle.putInt("player_number", playerNumber)
                     bundle.putString("winner", winner.winner.toString())

@@ -90,8 +90,8 @@ class GameOverMultiplayerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         winnerText = view.findViewById(R.id.txtWinner)
-        Log.d("Socket", "PlayerNumber: $playerNumber")
-        Log.d("Socket", "Winner: $winner")
+        //.d("Socket", "PlayerNumber: $playerNumber")
+        //Log.d("Socket", "Winner: $winner")
 
         winnerText.text = if (won) getString(R.string.WON) else getString(R.string.LOST)
 

@@ -53,7 +53,7 @@ class MultiplayerMenuFragment : Fragment() {
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             SocketHandler.closeConnection()
-            Log.d("Socket", "Disconnected")
+            //Log.d("Socket", "Disconnected")
             findNavController().navigate(R.id.action_multiplayerMenuFragment_to_menuFragment)
         }
     }
@@ -88,7 +88,7 @@ class MultiplayerMenuFragment : Fragment() {
     @OptIn(DelicateCoroutinesApi::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        init()
+        init(view)
 
         val searchingAnimation: LottieAnimationView = view.findViewById(R.id.animationSearching)
         searchingAnimation.visibility = View.GONE
@@ -96,13 +96,12 @@ class MultiplayerMenuFragment : Fragment() {
         val btnPlayerSearch: Button = view.findViewById(R.id.btnSearchPlayer)
         btnPlayerSearch.setOnClickListener(){
 
-            txtUsername = view.findViewById(R.id.txtUsername)
             if(txtUsername.text.toString().isEmpty()){
                 showToast("Please enter your username")
             }else{
                 val newGame = getString(R.string.NEW_GAME)
                 SocketHandler.emit(newGame, txtUsername.text.toString().trim())
-                Log.d("txtUsername", "Username: ${txtUsername.text}")
+                //Log.d("txtUsername", "Username: ${txtUsername.text}")
                 btnPlayerSearch.visibility = View.GONE
                 searchingAnimation.visibility = View.VISIBLE
             }
@@ -168,11 +167,12 @@ class MultiplayerMenuFragment : Fragment() {
      * This method initializes event-related string values by fetching them from resources.
      * It retrieves the event names used in the application from string resources.
      */
-    private fun init(){
+    private fun init(view: View){
         connectEvent = getString(R.string.connect)//get the Event Name from string
         roomNameEvent = getString(R.string.ROOM_NAME)
         initEvent = getString(R.string.INIT)
         startGameEvent = getString(R.string.START_GAME)
+        txtUsername = view.findViewById(R.id.txtUsername)
     }
 
 

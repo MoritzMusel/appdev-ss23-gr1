@@ -104,7 +104,6 @@ class SnakeMultiplayerView @JvmOverloads constructor(
     }
 
     /**
-     * Draws the game view on the canvas.
      * This method is responsible for rendering the game view on the provided canvas.
      * It first initializes the game state from JSON if not already initialized,
      * then draws the background and the current game state on the canvas.
@@ -163,7 +162,6 @@ class SnakeMultiplayerView @JvmOverloads constructor(
 
         val rect = Rect(left.toInt(), top.toInt(), right.toInt(), bottom.toInt())
         canvas.drawBitmap(originalBitmap, null, rect, null)
-        //canvas.drawRect(food.x * width, food.y * height, (food.x + 1) * width, (food.y + 1) * height, foodColor)
     }
 
 
@@ -180,10 +178,7 @@ class SnakeMultiplayerView @JvmOverloads constructor(
         val snake = playerState.snake
         for (i in snake.indices) {
             val cell = snake[i]
-
-            // Verwende eine andere Farbe für das letzte Element
-            if (i == snake.size - 1) {
-                val lastCellPaint = Paint(paint) // Kopiere die vorhandene Paint-Eigenschaften
+            if (i == snake.size - 1) {//paint other color for the head
                 canvas.drawRect(cell.x * width, cell.y * height, (cell.x + 1) * width, (cell.y + 1) * height, paintHead)
             } else {
                 canvas.drawRect(cell.x * width, cell.y * height, (cell.x + 1) * width, (cell.y + 1) * height, paint)
