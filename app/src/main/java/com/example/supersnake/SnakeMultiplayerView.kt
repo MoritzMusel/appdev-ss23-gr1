@@ -2,8 +2,11 @@ package com.example.supersnake
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -18,11 +21,15 @@ class SnakeMultiplayerView @JvmOverloads constructor(
 
     private val paintBackground = Paint()
     private val paintSnake1 = Paint()
+    private val paintSnake1Head = Paint()
     private val paintSnake2 = Paint()
+    private val paintSnake2Head = Paint()
     private val foodColor = Paint()
     private lateinit var state: GameState
     private var initialized = false
     private  var gson: Gson
+    private var originalBitmap : Bitmap
+
 
     private val json = """
 {
@@ -30,40 +37,40 @@ class SnakeMultiplayerView @JvmOverloads constructor(
         {
             "pos": {
                 "x": 3,
-                "y": 10
+                "y": 20
             },
             "vel": {
                 "x": 0,
                 "y": 0
             },
             "snake": [
-                { "x": 1, "y": 10 },
-                { "x": 2, "y": 10 },
-                { "x": 3, "y": 10 }
+                { "x": 1, "y": 20 },
+                { "x": 2, "y": 20 },
+                { "x": 3, "y": 20 }
             ],
             "points": 0,
             "playerOneName": ""
         },
         {
             "pos": {
-                "x": 18,
-                "y": 10
+                "x": 38,
+                "y": 20
             },
             "vel": {
                 "x": 0,
                 "y": 0
             },
             "snake": [
-                { "x": 20, "y": 10 },
-                { "x": 19, "y": 10 },
-                { "x": 18, "y": 10 }
+                { "x": 40, "y": 20 },
+                { "x": 39, "y": 20 },
+                { "x": 38, "y": 20 }
             ],
             "points": 0,
             "playerTwoName": ""
         }
     ],
     "food": {},
-    "gridsize": 20
+    "gridsize": 40
 }
 """
     /**
@@ -75,9 +82,13 @@ class SnakeMultiplayerView @JvmOverloads constructor(
     init {
         paintBackground.color = ContextCompat.getColor(context, R.color.BG_COLOUR)
         paintSnake1.color = ContextCompat.getColor(context, R.color.SNAKE_COLOUR)
+        paintSnake1Head.color = ContextCompat.getColor(context, R.color.SNAKE_COLOUR_HEAD)
+
         paintSnake2.color = ContextCompat.getColor(context, R.color.SNAKE_COLOUR2)
+        paintSnake2Head.color = ContextCompat.getColor(context, R.color.SNAKE_COLOUR2_HEAD)
         foodColor.color = ContextCompat.getColor(context, R.color.FOOD_COLOUR)
         gson = Gson()
+        originalBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.snake_apple)
     }
 
     /**
@@ -123,8 +134,8 @@ class SnakeMultiplayerView @JvmOverloads constructor(
         val gridSizeHeight = height.toFloat() / state.gridsize
 
         paintFood(canvas, state.food, gridSizeWidth, gridSizeHeight)
-        paintPlayer(canvas, state.players[0], gridSizeWidth, gridSizeHeight, paintSnake1)
-        paintPlayer(canvas, state.players[1], gridSizeWidth, gridSizeHeight, paintSnake2)
+        paintPlayer(canvas, state.players[0], gridSizeWidth, gridSizeHeight, paintSnake1, paintSnake1Head)
+        paintPlayer(canvas, state.players[1], gridSizeWidth, gridSizeHeight, paintSnake2, paintSnake2Head)
     }
 
     /**
@@ -133,7 +144,7 @@ class SnakeMultiplayerView @JvmOverloads constructor(
      * @param canvas The canvas on which the background is to be drawn.
      */
     private fun drawBackground(canvas: Canvas) {
-        canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paintBackground)
+        canvas.drawRect(0f, 0f, canvas.width.toFloat(), canvas.height.toFloat(), paintBackground)
     }
 
     /**
@@ -145,7 +156,14 @@ class SnakeMultiplayerView @JvmOverloads constructor(
      * @param height The height of a single cell on the canvas.
      */
     private fun paintFood(canvas: Canvas, food: Food, width: Float, height: Float) {
-        canvas.drawRect(food.x * width, food.y * height, (food.x + 1) * width, (food.y + 1) * height, foodColor)
+        val left = food.x * width
+        val top = food.y * height
+        val right = (food.x + 1) * width
+        val bottom = (food.y + 1) * height
+
+        val rect = Rect(left.toInt(), top.toInt(), right.toInt(), bottom.toInt())
+        canvas.drawBitmap(originalBitmap, null, rect, null)
+        //canvas.drawRect(food.x * width, food.y * height, (food.x + 1) * width, (food.y + 1) * height, foodColor)
     }
 
 
@@ -158,10 +176,18 @@ class SnakeMultiplayerView @JvmOverloads constructor(
      * @param height The height of a single cell on the canvas.
      * @param paint The paint used for drawing the snake cells.
      */
-    private fun paintPlayer(canvas: Canvas, playerState: Player, width: Float, height: Float, paint: Paint) {
+    private fun paintPlayer(canvas: Canvas, playerState: Player, width: Float, height: Float, paint: Paint, paintHead: Paint) {
         val snake = playerState.snake
-        for (cell in snake) {
-            canvas.drawRect(cell.x * width, cell.y * height, (cell.x + 1) * width, (cell.y + 1) * height, paint)
+        for (i in snake.indices) {
+            val cell = snake[i]
+
+            // Verwende eine andere Farbe für das letzte Element
+            if (i == snake.size - 1) {
+                val lastCellPaint = Paint(paint) // Kopiere die vorhandene Paint-Eigenschaften
+                canvas.drawRect(cell.x * width, cell.y * height, (cell.x + 1) * width, (cell.y + 1) * height, paintHead)
+            } else {
+                canvas.drawRect(cell.x * width, cell.y * height, (cell.x + 1) * width, (cell.y + 1) * height, paint)
+            }
         }
     }
 

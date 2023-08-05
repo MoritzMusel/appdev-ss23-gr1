@@ -29,7 +29,6 @@ class Food {
     }
 
     fun draw(canvas: Canvas, context: Context) {
-
         val originalBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.snake_apple)
         val imageBitmap = Bitmap.createScaledBitmap(originalBitmap, Snake.CELL_SIZE + 10, Snake.CELL_SIZE + 10, false)
         originalBitmap.recycle()

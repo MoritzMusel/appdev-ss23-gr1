@@ -6,7 +6,9 @@
 
     <!-- Colors for Multiplayer-->
     <color name="BG_COLOUR">#231f20</color>
-    <color name="SNAKE_COLOUR">#c2c2c2</color>
+    <color name="SNAKE_COLOUR">#006400</color>
+    <color name="SNAKE_COLOUR_HEAD">#00FF00</color>
     <color name="FOOD_COLOUR">#e66916</color>
     <color name="SNAKE_COLOUR2">#7f0000</color>
+    <color name="SNAKE_COLOUR2_HEAD">#FF0000</color>
 </resources>
