@@ -4,6 +4,7 @@
 *The popular cult game snake with a modern theme, pixel look and a multiplayer.*
 ## Backend
 *To host the server for our multiplayer application, we have chosen Render. Render provides us with the opportunity to host a NodeJS server for free for 30 days, which is sufficient for the duration of this project.*
+https://supersnake-backend.onrender.com/
 
 *In the "Backend" folder, you'll find the code for the backend functionality along with an HTML dummy client. The HTML dummy client is currently no longer necessary and can be disregarded in its current state. For the execution of the server, the same backend code has been transferred to a different Git repository, which the server can access.*
 https://github.com/MarcelEwinger/SuperSnake_Backend/tree/master
