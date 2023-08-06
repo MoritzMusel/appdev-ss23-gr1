@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.supersnake.snake.CallbackNavigation
 import com.example.supersnake.snake.Direction
 import com.example.supersnake.snake.SnakeThread
+import java.lang.Math.abs
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -126,20 +127,17 @@ class SingleplayerFragment : Fragment(), SurfaceHolder.Callback, CallbackNavigat
         }
     }
 
-    private fun onTouch(p1: MotionEvent?): Boolean {
-        var snakeSize = snakeThread!!.snake.bodyParts.size
-        var snakeHead = snakeThread!!.snake.getHead()
-        when (p1?.action) {
-            /*
+    private fun onTouch(event: MotionEvent) {
+        when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-              // Handle touch down event
-                touchStartX = p1.x
-                touchStartY = p1.y
+                // Handle touch down event
+                touchStartX = event.x
+                touchStartY = event.y
             }
             MotionEvent.ACTION_UP -> {
                 // Handle touch up event
-                val dx = p1.x - touchStartX
-                val dy = p1.y - touchStartY
+                val dx = event.x - touchStartX
+                val dy = event.y - touchStartY
                 if (abs(dx) > abs(dy)) {
                     // Horizontal swipe
                     if (dx > 0) {
@@ -159,27 +157,10 @@ class SingleplayerFragment : Fragment(), SurfaceHolder.Callback, CallbackNavigat
                         currentDirection = Direction.UP
                     }
                 }
-            }
-             */
-            MotionEvent.ACTION_DOWN -> {
-                val x = p1.x
-                val y = p1.y
-                if (x < snakeHead.x * snakeSize && currentDirection != Direction.RIGHT) {
-                    currentDirection = Direction.LEFT
-                    snakeThread!!.snake.setDirection(currentDirection)
-                } else if (x > snakeHead.x * snakeSize + snakeSize && currentDirection != Direction.LEFT) {
-                    currentDirection = Direction.RIGHT
-                    snakeThread!!.snake.setDirection(currentDirection)
-                } else if (y < snakeHead.y * snakeSize && currentDirection != Direction.DOWN) {
-                    currentDirection = Direction.UP
-                    snakeThread!!.snake.setDirection(currentDirection)
-                } else if (y > snakeHead.y * snakeSize + snakeSize && currentDirection != Direction.UP) {
-                    currentDirection = Direction.DOWN
-                    snakeThread!!.snake.setDirection(currentDirection)
-                }
+                // Update the snake's direction in the SnakeThread
+                snakeThread?.updateDirection(currentDirection)
             }
         }
-        return true
     }
 
     override fun onGameOver(snakeSize: Number) {

@@ -6,6 +6,8 @@ import android.graphics.Paint
 class Snake {
     internal val bodyParts = mutableListOf<SnakeBodyPart>()
     private var direction = Direction.RIGHT
+    private var doubleGrowthActive = false
+    private var doubleGrowthEndTime = 0L
 
     private val paint = Paint().apply {
         color = android.graphics.Color.parseColor("#69FF93")
@@ -39,14 +41,18 @@ class Snake {
     }
 
     fun grow() {
-        val tail = bodyParts.last()
-        val newTail = when (direction) {
-            Direction.UP -> SnakeBodyPart(tail.x, tail.y + CELL_SIZE)
-            Direction.DOWN -> SnakeBodyPart(tail.x, tail.y - CELL_SIZE)
-            Direction.LEFT -> SnakeBodyPart(tail.x + CELL_SIZE, tail.y)
-            Direction.RIGHT -> SnakeBodyPart(tail.x - CELL_SIZE, tail.y)
+        // Double the growth if the power-up is active
+        val growth = if (doubleGrowthActive) 2 else 1
+        for (i in 0 until growth) {
+            val tail = bodyParts.last()
+            val newTail = when (direction) {
+                Direction.UP -> SnakeBodyPart(tail.x, tail.y + CELL_SIZE)
+                Direction.DOWN -> SnakeBodyPart(tail.x, tail.y - CELL_SIZE)
+                Direction.LEFT -> SnakeBodyPart(tail.x + CELL_SIZE, tail.y)
+                Direction.RIGHT -> SnakeBodyPart(tail.x - CELL_SIZE, tail.y)
+            }
+            bodyParts.add(newTail)
         }
-        bodyParts.add(newTail)
     }
 
     fun setDirection(newDirection: Direction) {
@@ -59,6 +65,23 @@ class Snake {
     fun checkCollision(): Boolean {
         val head = getHead()
         return bodyParts.any { it != head && it.x == head.x && it.y == head.y }
+    }
+
+    fun isDoubleGrowthActive(): Boolean {
+        return doubleGrowthActive
+    }
+
+    fun getDoubleGrowthEndTime(): Long {
+        return doubleGrowthEndTime
+    }
+
+    fun deactivateDoubleGrowth() {
+        doubleGrowthActive = false
+    }
+
+    fun activateDoubleGrowth(duration: Int) {
+        doubleGrowthActive = true
+        doubleGrowthEndTime = System.currentTimeMillis() + duration
     }
 
     companion object {

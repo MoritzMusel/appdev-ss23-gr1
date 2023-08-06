@@ -15,8 +15,8 @@ class Food {
         style = Paint.Style.FILL
     }
 
-    private var x = Snake.CELL_SIZE*3
-    private var y = Snake.CELL_SIZE*3
+    internal var x = Snake.CELL_SIZE*3
+    internal var y = Snake.CELL_SIZE*3
 
     fun respawn(width: Int, height: Int, snake: Snake) {
         val random = Random()
@@ -30,7 +30,7 @@ class Food {
 
     fun draw(canvas: Canvas, context: Context) {
         val originalBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.snake_apple)
-        val imageBitmap = Bitmap.createScaledBitmap(originalBitmap, Snake.CELL_SIZE + 10, Snake.CELL_SIZE + 10, false)
+        val imageBitmap = Bitmap.createScaledBitmap(originalBitmap, Snake.CELL_SIZE, Snake.CELL_SIZE, false)
         originalBitmap.recycle()
 
         canvas?.let {

@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import com.example.supersnake.snake.Snake.Companion.CELL_SIZE
+import kotlin.random.Random
 
 class SnakeThread(private val surfaceHolder: SurfaceHolder, private val surfaceView: SurfaceView, private val navigationCallback: CallbackNavigation, private val context:Context) : Thread() {
 
@@ -19,8 +20,11 @@ class SnakeThread(private val surfaceHolder: SurfaceHolder, private val surfaceV
     // Adjust the speed of the snake here
     private var moveInterval = 150L // Snake moves every 200 milliseconds
 
+    private var currentDirection = Direction.RIGHT
+
     val snake = Snake() // Create your Snake class instance here
     private val food = Food() // Create your Food class instance here
+    private val powerUp = PowerUp(snake) //Snake power up
 
     private val backgroundPaint = Paint().apply {
         color = Color.parseColor("#303030")
@@ -77,23 +81,31 @@ class SnakeThread(private val surfaceHolder: SurfaceHolder, private val surfaceV
     private fun updateGame() {
         // Update the game state here (snake movement, collisions, etc.)
         // Move the snake based on its current direction
+        snake.setDirection(currentDirection)
         snake.move()
 
         // Check for collisions with the food
         if (food.checkCollision(snake)) {
-            Log.i("SnakeThread", "food hit")
             snake.grow()
             food.respawn(surfaceView.width, surfaceView.height, snake)
             if(snake.bodyParts.size%3==0) moveInterval = (moveInterval*1.1).toLong()
         }
 
-        // Check for collisions with the walls
-        if (checkWallCollision()) {
-            gameOver()
+        if (!powerUp.isActive() && Random.nextInt(100) < 5) {
+            // Spawn a new power-up with a 5% chance on each game loop iteration
+            powerUp.spawn(surfaceView.width, surfaceView.height)
         }
 
-        // Check for collisions with itself
-        if (snake.checkCollision()) {
+        if (powerUp.checkCollision()) {
+            powerUp.activatePowerUp()
+        }
+        // Check if the power-up duration has ended
+        if (snake.isDoubleGrowthActive() && System.currentTimeMillis() >= snake.getDoubleGrowthEndTime()) {
+            snake.deactivateDoubleGrowth()
+        }
+
+        // Check for collisions with the walls and the snake itself
+        if (checkWallCollision() || snake.checkCollision()) {
             gameOver()
         }
     }
@@ -107,6 +119,7 @@ class SnakeThread(private val surfaceHolder: SurfaceHolder, private val surfaceV
             // Draw the food
             food.draw(canvas, context)
 
+            powerUp.draw(canvas)
             // Draw the snake
             val snakeRect = Rect(snake.getHead().x, snake.getHead().y, snake.getHead().x + CELL_SIZE, snake.getHead().y + CELL_SIZE)
             it.drawRect(snakeRect, snakePaintHead)
@@ -132,5 +145,9 @@ class SnakeThread(private val surfaceHolder: SurfaceHolder, private val surfaceV
         running = false
         this.stopThread()
         navigationCallback.onGameOver(snake.bodyParts.size)
+    }
+
+    fun updateDirection(newDirection: Direction) {
+        currentDirection = newDirection
     }
 }
